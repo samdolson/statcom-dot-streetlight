@@ -1,0 +1,59 @@
+Analysis ID: 1991985
+Analysis: STATCOM1_2022_RAMP
+Created by: justin.meade@iowadot.us
+Created on: 2025-12-15
+Organization: Iowa DOT Regional
+
+Analysis Setup Details:
+Analysis Type: Congestion Trends
+Additional Project Configuration: Speed Percentile Attributes (5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95)
+Unit of Measurement: Miles
+Mode of Travel: All Vehicles
+Zone Library Type(s): OSM Tertiary Segments (Jan 2025)
+Output Type: StL All Vehicles Volume
+
+Analysis Options: 
+Data Periods: Jan 01, 2022 - Dec 31, 2022
+
+
+Day Type: 
+0: All Days (M-Su)
+1: Weekday (M-F)
+2: Weekend Day (Sa-Su)
+
+Day Part: 
+00: All Day (12am-12am)
+01: 12am (12am-1am)
+02: Early AM (12am-6am)
+03: 1am (1am-2am)
+04: 2am (2am-3am)
+05: 3am (3am-4am)
+06: 4am (4am-5am)
+07: 5am (5am-6am)
+08: 6am (6am-7am)
+09: Peak AM (6am-10am)
+10: 7am (7am-8am)
+11: 8am (8am-9am)
+12: 9am (9am-10am)
+13: 10am (10am-11am)
+14: Mid-Day (10am-4pm)
+15: 11am (11am-12noon)
+16: 12pm (12noon-1pm)
+17: 1pm (1pm-2pm)
+18: 2pm (2pm-3pm)
+19: 3pm (3pm-4pm)
+20: 4pm (4pm-5pm)
+21: Peak PM (4pm-8pm)
+22: 5pm (5pm-6pm)
+23: 6pm (6pm-7pm)
+24: 7pm (7pm-8pm)
+25: 8pm (8pm-9pm)
+26: Late PM (8pm-12am)
+27: 9pm (9pm-10pm)
+28: 10pm (10pm-11pm)
+29: 11pm (11pm-12am)
+
+Country: USA
+Metrics Version: R156-M140
+
+Copyright © 2011 - 2025, StreetLight Data, Inc. All rights reserved.
