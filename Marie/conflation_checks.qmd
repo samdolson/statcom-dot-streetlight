@@ -1,0 +1,97 @@
+---
+title: "Conflation Checks"
+author: "Marie Hardt"
+format: html
+---
+
+```{r}
+#| label: setup
+#| echo: false
+library(tidyverse)
+library(sf) # geospatial package
+library(leaflet) # maps
+library(here) # directory stuff
+```
+
+We want to check the conflation provided by the Iowa DOT. It looks like they provided shapefiles for Streetlight and RAMS, along with shapefiles for the conflated data. We can read in the shapefiles and see whether the conflation seems reasonable.
+
+# Data from 2022
+
+## Streetlight
+
+### Ramps
+
+```{r}
+#| label: stl-ramps-2022
+#| echo: false
+stlramps22 <- st_read(here("FromDOT/12172025_Materials/DATA/STL_EXTRACT/1991985_STATCOM1_2022_RAMP/1991985_STATCOM1_2022_RAMP/Shapefile/1991985_STATCOM1_2022_RAMP_osm_segment.shp"), as_tibble = TRUE)
+```
+
+```{r}
+#| label: stl-ramps-2022-map
+#| echo: false
+
+leaflet() |>
+  addTiles() |>
+  addPolylines(data = stlramps22, color = "red")
+```
+
+### Motorways
+
+```{r}
+#| label: stl-mw-2022
+#| echo: false
+stlmw22 <- st_read(here("FromDOT/12172025_Materials/DATA/STL_EXTRACT/1991984_STATCOM1_2022_MOTORWAY/1991984_STATCOM1_2022_MOTORWAY/Shapefile/1991984_STATCOM1_2022_MOTORWAY_osm_segment.shp"), as_tibble = TRUE)
+```
+
+```{r}
+#| label: stl-mw-2022-map
+#| echo: false
+
+leaflet() |>
+  addTiles() |>
+  addPolylines(data = stlmw22, color = "orange")
+```
+
+## RAMS
+
+## Conflated
+
+# Data from 2024
+
+## Streetlight
+
+## RAMS
+
+## Conflated
+
+```{r}
+#| label: conf2022
+#| echo: false
+conf2022 <- st_read(here("FromDOT/12172025_Materials/DATA/CONFLATED/2022.shp"), as_tibble = TRUE)
+```
+
+```{r}
+#| label: conf2022-map
+#| echo: false
+
+leaflet() |>
+  addTiles() |>
+  addPolylines(data = conf2022, color = "blue")
+```
+
+```{r}
+#| label: conf2024
+#| echo: false
+conf2024 <- st_read(here("FromDOT/12172025_Materials/DATA/CONFLATED/2024.shp"), as_tibble = TRUE)
+```
+
+```{r}
+#| label: conf2022-map
+#| echo: false
+
+leaflet() |>
+  addTiles() |>
+  addPolylines(data = conf2024, color = "blue")
+```
+
