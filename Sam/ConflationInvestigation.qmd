@@ -1,0 +1,192 @@
+---
+title: "Conflation Checks - Redux"
+format: html
+---
+
+```{r}
+#| label: setup
+#| echo: false
+library(tidyverse)
+library(sf) # geospatial package
+library(leaflet) # maps
+library(here) # directory stuff
+```
+
+We want to check the conflation provided by the Iowa DOT. It looks like they provided shapefiles for Streetlight and RAMS, along with shapefiles for the conflated data. We can read in the shapefiles and see whether the conflation seems reasonable.
+
+# Data from 2022
+
+## Streetlight
+
+### Ramps
+
+```{r}
+#| label: stl-ramps-2022
+#| echo: false
+stlramps22 <- st_read(here("FromDOT/12172025_Materials/DATA/STL_EXTRACT/1991985_STATCOM1_2022_RAMP/1991985_STATCOM1_2022_RAMP/Shapefile/1991985_STATCOM1_2022_RAMP_osm_segment.shp"), as_tibble = TRUE)
+```
+
+```{r}
+#| label: stl-ramps-2022-map
+#| echo: false
+
+leaflet() |>
+  addTiles() |>
+  addPolylines(data = stlramps22, color = "red")
+```
+
+### Motorways
+
+```{r}
+#| label: stl-mw-2022
+#| echo: false
+stlmw22 <- st_read(here("FromDOT/12172025_Materials/DATA/STL_EXTRACT/1991984_STATCOM1_2022_MOTORWAY/1991984_STATCOM1_2022_MOTORWAY/Shapefile/1991984_STATCOM1_2022_MOTORWAY_osm_segment.shp"), as_tibble = TRUE)
+```
+
+```{r}
+#| label: stl-mw-2022-map
+#| echo: false
+
+leaflet() |>
+  addTiles() |>
+  addPolylines(data = stlmw22, color = "orange")
+```
+
+## RAMS
+
+## Conflated
+
+# Data from 2024
+
+## Streetlight
+
+## RAMS
+
+## Conflated
+
+```{r}
+#| label: conf2022
+#| echo: false
+conf2022 <- st_read(here("FromDOT/12172025_Materials/DATA/CONFLATED/2022.shp"), as_tibble = TRUE)
+```
+
+```{r}
+conf2022_ll <- st_transform(conf2022, 4326)
+
+leaflet(conf2022_ll) |>
+  addTiles() |>
+  addPolylines(color = "blue", weight = 3, opacity = 0.9)
+```
+
+```{r}
+#| label: conf2022-map
+#| echo: false
+
+leaflet() |>
+  addTiles() |>
+  addPolylines(data = conf2022, color = "blue")
+```
+
+```{r}
+#| label: conf2024
+#| echo: false
+conf2024 <- st_read(here("FromDOT/12172025_Materials/DATA/CONFLATED/2024.shp"), as_tibble = TRUE)
+```
+
+```{r}
+#| label: conf2022-map
+#| echo: false
+
+leaflet() |>
+  addTiles() |>
+  addPolylines(data = conf2024, color = "blue")
+```
+
+# 2022 Map Comparison 
+
+```{r}
+#| label: dot-2022
+#| echo: false
+stlramps22 <- st_read(here("FromDOT/12172025_Materials/DATA/STL_EXTRACT/1991985_STATCOM1_2022_RAMP/1991985_STATCOM1_2022_RAMP/Shapefile/1991985_STATCOM1_2022_RAMP_osm_segment.shp"), as_tibble = TRUE)
+
+dotsys22 <- st_read(here("FromDOT/12172025_Materials/DATA/RAMS_EXPORT/TDSOUT_SYSPLN.STATCOM1_2022.shp"), as_tibble = TRUE) |>
+  na.omit()
+
+# Drop Z and M dimensions
+dotsys22_xy <- st_zm(dotsys22, drop = TRUE, what = "ZM")
+
+# Transform to WGS84
+dotsys22_ll <- st_transform(dotsys22_xy, 4326)
+
+leaflet(dotsys22_ll) |>
+  addTiles() |>
+  addPolylines(color = "orange", weight = 3)
+```
+
+```{r}
+library(sf)
+library(leaflet)
+library(crosstalk)
+
+conf2022_ll <- st_transform(conf2022, 4326)
+stlmw22_ll  <- st_transform(stlmw22, 4326)   
+
+dotsys22_ll <- dotsys22 |>
+  st_zm(drop = TRUE, what = "ZM") |>
+  st_transform(4326)
+
+col_conf <- "#1F78B4"
+col_stl  <- "#E31A1C"
+col_dot  <- "#33A02C"
+
+# col_conf <- "blue"   
+# col_stl  <- "orange" 
+# col_dot  <- "green"  
+
+# Conflation
+m_conf <- leaflet(conf2022_ll) |>
+  addTiles() |>
+  addPolylines(color = col_conf, weight = 3, opacity = 0.9) |>
+  addLegend(
+    position = "bottomright",
+    colors  = col_conf,
+    labels  = "Conflation",
+    title   = "Data Source",
+    opacity = 0.9
+  )
+
+# Streetlight
+m_stl <- leaflet(stlmw22_ll) |>
+  addTiles() |>
+  addPolylines(color = col_stl, weight = 3, opacity = 0.9) |>
+  addLegend(
+    position = "bottomright",
+    colors  = col_stl,
+    labels  = "Streetlight",
+    title   = "Data Source",
+    opacity = 0.9
+  )
+
+# DOT
+m_dot <- leaflet(dotsys22_ll) |>
+  addTiles() |>
+  addPolylines(color = col_dot, weight = 3, opacity = 0.9) |>
+  addLegend(
+    position = "bottomright",
+    colors  = col_dot,
+    labels  = "DOT",
+    title   = "Data Source",
+    opacity = 0.9
+  )
+
+bscols(
+  widths = c(4, 4, 4),
+  m_conf,
+  m_stl,
+  m_dot
+)
+```
+
+```{r}
+
+```
