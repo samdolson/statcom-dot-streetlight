@@ -1,0 +1,146 @@
+---
+title: "Training v Validation"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Is StreetLight Methodologically Independent from Iowa Department of Transportation Counts
+
+## Why this question matters
+
+When comparing StreetLight’s modeled volumes to DOT/JACKALOPE observed counts, we expect the two to be **highly correlated** because they target the same underlying construct (true traffic volume). Strong correlation is not, by itself, evidence of “non-independence.”
+
+The relevant concern is **methodological independence**:
+
+* StreetLight uses independent data sources (probe/mobile/GPS) and a general model; DOT counts are used only for *evaluation* or as part of broad calibration.
+* StreetLight uses Iowa DOT counts (or close proxies) as direct inputs, constraints, or segment-level blending in ways that mechanically force agreement—especially at or near counted locations.
+
+Assessing methodological independence is to tackle the question, "**To what extent are Iowa DOT counts used to *produce* StreetLight Iowa estimates (not merely to evaluate them)?**"
+
+## What “assessing independence” entails (i.e., what I actually did)
+
+Focus on the extent Iowa DOT is used by Streetlight, with particular attention to *where* and *how* DOT counts enter the Streetlight AADT estimation pipeline. 
+
+Given Streetlight is using "Random Forest", some points of the process of note are:
+
+1. **Calibration/Training vs. Validation**
+
+* Are DOT counts used to calibrate/train the model?
+* Are they held out for independent validation?
+
+FHWA guidance describes that vendors may locally calibrate using ground-truth counts and explicitly emphasizes the value of withholding some continuous count sites so an independent test can be performed.  
+
+2. **Geographic scope of calibration**
+
+* Is calibration national/regional (less concerning for Iowa-specific circularity)?
+* Or is calibration state-specific (more concerning)?
+
+3. **Segment-level use or blending**
+
+* Are counted links (or nearby links) “corrected,” constrained, or replaced using DOT data?
+* This is the highest-risk form of non-independence because it can create agreement by construction.
+
+4. **Holdout design and leakage controls**
+
+* Are holdouts chosen to avoid near-duplicates (e.g., nearby counters on the same corridor)?
+* StreetLight’s AADT 2024 paper explicitly mentions distance-based rules to group nearby counters into the same fold, which is precisely a leakage control meant to avoid “training on a neighbor, testing on the target.” 
+
+## Evidence we currently have (from the provided documents, sources included)
+
+### 1) StreetLight’s own documentation: counts are used, but evaluated with holdouts
+
+StreetLight’s AADT validation papers describe evaluating accuracy via (stratified) k-fold cross-validation: train on a subset of ground-truth counters and evaluate on held-out counters.  
+
+This supports:
+
+* **Counts do play a role in calibration/training** (not “validation only” in the strictest sense).
+* But they are **not simply fit-and-reported at the same locations**; the holdout structure is intended to represent performance at “unseen sites.” 
+
+### 2) FHWA guidance: perfect “no overlap” is unrealistic, so independent holdouts are the standard remedy
+
+The FHWA guideline acknowledges both (i) why holdouts matter (to reduce manipulation/overfit) and (ii) why overlap risk can’t be eliminated entirely because count data are often public and may be available through other channels. 
+
+It also highlights an operational tradeoff: withholding data improves independence of validation, but too much withholding can reduce model quality—so agencies should prioritize *representative* holdouts. 
+
+### 3) Minnesota evidence: removing “training counters” did not meaningfully change accuracy (except the lowest-volume bin)
+
+This is the strongest quasi-experimental evidence in your packet.
+
+The FHWA guideline summarizes a Minnesota evaluation where ~65 MnDOT permanent ATRs were used by StreetLight as training/calibration sites; the researchers removed all those ATRs from the benchmark comparisons and found accuracy did not substantially change except at very low volumes (<1,000 AADT). 
+
+The Texas A&M / TTI report repeats the same key result: removing all 65 ATRs did not substantially affect accuracy (except the lowest-volume category, where sample size becomes very small). 
+
+**Why this matters for “independence”:**
+
+* If StreetLight were doing **segment-level blending/anchoring** to counter sites (the “one eating the other” concern), removing the training counters from evaluation would typically cause a visible drop in apparent accuracy at those sites or volume categories.
+* The fact that accuracy stays essentially the same is consistent with a model that is **not simply copying counter values**, but rather using probe-based features with a learned scaling relationship that generalizes.
+
+## Possible Implications
+
+### What we can say
+
+* StreetLight estimates are best viewed as **probe-derived modeled volumes** calibrated/validated against ground-truth counters, not as a direct transformation of DOT counts.
+* The available evidence (especially Minnesota) supports the view that StreetLight is **not mechanically anchored to the very counters used for calibration** in a way that would trivially force agreement.  
+* Therefore, observing strong agreement between Iowa DOT/JACKALOPE and StreetLight is compatible with two methods measuring the same latent traffic process—*even if calibration relies on counts in some capacity.*
+
+### What we can't say (yet)
+
+From StreetLight’s documents alone, we still cannot state definitively that:
+
+* Iowa DOT counts are **never** used in calibration,
+* calibration is **not** Iowa-specific,
+* or no segment-level corrections occur in Iowa.
+
+Those require either (i) explicit vendor disclosure or (ii) empirical diagnostics designed to detect local anchoring effects.
+
+## What remains to be seen
+
+Even with the provided papers, several Iowa-specific questions remain unresolved:
+
+1. **Iowa-specific calibration scope**
+   Do Iowa counters materially influence StreetLight’s Iowa estimates (state-level tuning), or are they only part of a national pool?
+
+2. **Which Iowa counter types/years are used**
+   Permanent ATRs vs short-term, which years, and whether the same-year Iowa counts are involved.
+
+3. **Evaluation independence for Iowa**
+   When StreetLight reports accuracy, are Iowa sites used for Iowa accuracy reporting held out from any calibration that could affect Iowa outputs?
+
+4. **Segment-level blending/post-processing**
+   Do counted links (or nearby links) receive any special adjustment that would inflate agreement at those locations?
+
+FHWA explicitly advises being cautious about validation results that look “too close” to calibration sites.  This is exactly the concern you’re flagging.
+
+## Reconciling this with Minnesota’s operational approach: fewer counters, but keep holdouts
+
+The Minnesota evaluation summary in the FHWA guideline recommends a phased deployment that preserves a core counter program while expanding probe-based estimates broadly:
+
+* “Continue to maintain MnDOT permanent counter sites”
+* “Start using probe-based counts for about 90% of the moderate- to high-volume roadways”
+* “Continue to use traditional short-term counts … as a spot check … to ensure probe-based AADT estimates remain within acceptable tolerances” 
+
+This aligns with FHWA’s general principle:
+
+* **Provide some counters for calibration if needed**, but
+* **reserve a representative subset as holdouts** for independent validation.  
+
+In other words, Minnesota’s approach implicitly treats “independence” as an **operational validation design problem**:
+
+* You don’t need zero overlap (often impossible),
+* but you do need *credible holdouts* and ongoing spot checks to detect drift and prevent circularity from masquerading as accuracy.
+
+## Practical takeaway
+
+Assessing whether StreetLight is methodologically independent from Iowa DOT is primarily about **calibration scope and validation design**, not about whether StreetLight and DOT numbers are correlated.
+
+**Current evidence supports:**
+
+* StreetLight uses holdout-based evaluation and leakage controls (distance-based folds). 
+* Independent evaluations (Minnesota) suggest training-site overlap does not materially drive accuracy for most volume ranges. 
+
+**Still needed for Iowa-specific confidence:**
+
+* explicit StreetLight statements (or an Iowa-focused analysis) on whether/how Iowa DOT counts enter calibration and whether Iowa accuracy metrics are out-of-sample with respect to that calibration.

@@ -1,0 +1,75 @@
+---
+title: "Statistical Independence"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+kendall_tau_adaptive_attached <- function(X, alpha = 0.05) {
+  X <- as.matrix(X)
+  n <- nrow(X); p <- ncol(X)
+
+  # compile/load the attached C++ implementation if needed
+  if (!exists("taucpp", mode = "function")) {
+    Rcpp::sourceCpp("/mnt/data/taucpp.cpp")
+  }
+
+  Tn <- taucpp(X)         # length-2: (S-stat Z), (max-stat scaled by w1)
+
+  # Component p-values (matches kendall_T_M.r)
+  pS <- 1 - stats::pnorm(Tn[1])
+
+  M_tau <- Tn[2] - 4 * log(p) + log(log(p))
+  pM <- 1 - exp(- exp(-M_tau/2) / sqrt(8*pi))
+
+  # Adaptive
+  C_tau <- min(pS, pM)
+  crit  <- 1 - sqrt(1 - alpha)
+  reject <- (C_tau < crit)
+
+  list(
+    n = n, p = p,
+    S_tau = Tn[1], p_S = pS,
+    M_tau = M_tau, p_M = pM,
+    C_tau = C_tau, alpha = alpha, critical_value = crit,
+    reject = reject
+  )
+}
+```
+
+```{r}
+library(readxl)
+library(here)
+initialDat <- read_excel("C:/Users/samue/OneDrive/Desktop/statcom-dot-streetlight/FromDOT/11172025_Materials/IA_SLD_portable_AADT_2021-2023_final.xlsx")
+names(initialDat)[names(initialDat) == "aadt_JACKALOPE (Observed count)"] <- "DOT"
+names(initialDat)[names(initialDat) == "aadt_STREETLIGHT (Estimated)"] <- "ST"
+```
+
+```{r}
+kt <- cor.test(initialDat$DOT, initialDat$ST, method = "kendall")
+kt
+```
+
+## Other 
+
+```{r}
+library(tidyverse)
+library(sf) # geospatial package
+library(leaflet) # maps
+library(here) # directory stuff
+
+conf2022 <- st_read(here("FromDOT/12172025_Materials/DATA/CONFLATED/2022.shp"), as_tibble = TRUE)
+conf2024 <- st_read(here("FromDOT/12172025_Materials/DATA/CONFLATED/2024.shp"), as_tibble = TRUE)
+names(conf2022)
+```
+
+```{r}
+kt2022 <- cor.test(conf2022$AADT_IADOT, conf2022$VOLUME_STL, method = "kendall")
+kt2022
+
+kt2024 <- cor.test(conf2024$AADT_IADOT, conf2024$VOLUME_STL, method = "kendall")
+kt2024
+```
