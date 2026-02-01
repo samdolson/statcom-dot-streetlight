@@ -1,0 +1,14 @@
+---
+title: "To-Dos"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Remaining To-Do List: 
+
+* Edit Indepdendence Assessment 
+* Get initial MAPE, other metrics (without spatial considerations)
+* Assess DOT vs. Streetlight with spatial considerations 
