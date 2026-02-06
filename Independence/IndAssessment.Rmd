@@ -20,126 +20,54 @@ biblatexoptions:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Is StreetLight Methodologically Independent from Iowa DOT Counts?
+# Overall
 
-## Overall Assessment
+StreetLight volume estimates and Iowa DOT counts should align closely because both systems measure the same underlying traffic volumes. High agreement is therefore expected but does not, by itself, imply that the two data sources are methodologically dependent.
 
-**Bottom line:**  
-StreetLight volumes and Iowa DOT counts should agree closely because both systems measure the same underlying traffic. High agreement alone does **not** indicate that the two are dependent.
+The relevant concern is not agreement, but whether Iowa DOT counts are used to directly produce StreetLight estimates (what I will henceforth refer to as "methodological independence"). Based on available StreetLight documentation, FHWA guidance, and independent state-level evaluations (including Minnesota DOT), current evidence supports StreetLight estimates being primarily probe-driven, with DOT counts used for calibration and validation, rather than for direct substitution or enforcement of agreement at specific locations.
 
-The key issue is whether Iowa DOT counts are used to **produce** StreetLight estimates (which would create circularity), or whether they are used only for **calibration and validation** of an otherwise independent, probe-based model.
+To emphasize the distinction: Calibration can improve model performance without compromising methodological independence, provided that evaluation is conducted on held-out data. As a matter of due diligence, however, confirmation of methodological independence would benefit from explicit vendor clarification that Iowa DOT count data are not used as direct inputs to model training or segment-level estimation, but are limited to calibration and validation, and that the StreetLight methodology does not incorporate Iowa DOT data in a manner that would directly constrain estimated volumes.
 
-Based on available documentation and independent evaluations:
+## Summary
 
-- StreetLight estimates are primarily derived from **probe/mobile/GPS data**, not directly from DOT counters  
-- Counts appear to be used mainly for **model calibration and accuracy checks**, not for replacing or forcing agreement at specific segments  
-- Reported evaluations use **holdout (out-of-sample) testing**, which reduces circularity  
-- External testing shows that removing training counters does **not materially change accuracy**, suggesting the model is not mechanically anchored to those sites  
-- It remains **unclear how much Iowa-specific count data are used during calibration**, which is the main outstanding risk to independence  
+Based on publicly available documentation and independent evaluations:
 
-**Implications for Iowa DOT**
+- StreetLight estimates are derived primarily from probe/mobile/GPS data, not directly from DOT traffic counters (StreetLight documentation)  
+- Traffic counts are used mainly for model calibration and accuracy assessment, consistent with standard traffic modeling practice (StreetLight documentation; FHWA guidance)  
+- Out-of-sample (holdout) testing is explicitly reported in validation studies, which reduces the risk of circularity (StreetLight documentation)  
+- The primary unresolved issue is the *extent of Iowa-specific count data used during calibration*, which represents the main remaining risk to full independence  
 
-- Strong agreement between DOT and StreetLight is **expected and appropriate**, not evidence of non-independence  
-- Correlation alone cannot diagnose dependence  
-- The primary risk to monitor is **local calibration or segment-level adjustment using Iowa counters**  
-- Full confirmation would require **vendor disclosure or Iowa-specific testing**, rather than additional statistical comparisons  
+## Implications
 
-## Detailed Assessment
+- The principal risk to monitor is *local calibration or segment-level adjustment using Iowa DOT counters*
+- Strong agreement between DOT counts and StreetLight estimates is expected, given that both estimate "true traffic volume"  
+- Correlation or low error alone cannot diagnose methodological dependence (statistical tests of independence are limited in scope)
+- Definitive confirmation of methodological independence requires vendor disclosure or Iowa-specific holdout testing, not additional statistical comparisons alone  
 
-### Why this question matters
+Taken together, current evidence supports interpreting StreetLight volumes as independently generated but empirically calibrated, consistent with FHWA-recommended validation practice.
 
-When comparing StreetLight estimates to DOT/JACKALOPE observed counts, we expect **high correlation** because both systems measure true traffic volume.
+## More Details
 
-High correlation is therefore **necessary but not diagnostic**.
+The following provides further details on basis for this assessment, i.e., why agreement is expected, how independence should be evaluated, what evidence is currently available, and what uncertainties remain.
 
-The relevant concern is **methodological independence**:
+### Why agreement is expected
 
-- Independent → estimates driven primarily by probe data, with counts used only for calibration or validation  
-- Potentially dependent → counts directly constrain, replace, or blend into estimates at specific locations  
+When comparing StreetLight estimates to Iowa DOT or JACKALOPE observed counts, high correlation is inevitable because both aim to measure the same latent quantity: True average annual traffic volume.
+
+  - High correlation is therefore necessary but not diagnostic.
+  - The relevant question is not *whether* the estimates agree, but *why* they agree.
+
+### What methodological independence means in practice
+
+Methodological independence depends on *how counts enter the modeling pipeline*, not whether they appear anywhere in it:
+
+- Acceptable: Counts used for calibration and model tuning, with performance evaluated on held-out sites (FHWA guidance)  
+- Problematic: Counts directly constraining, replacing, or being used as ann input for estimating specific segments  
 
 The practical question is:
 
 > To what extent are Iowa DOT counts used to *produce* StreetLight Iowa estimates, rather than simply evaluate them?
 
-### What assessing independence entails
-
-We focused on where and how DOT counts might enter the StreetLight estimation process.
-
-**Calibration vs. validation**
-- Are counts used to train the model?
-- Are some locations held out strictly for testing?
-
-Best practice recommends holding out sites so performance is evaluated on unseen data.
-
-**Geographic scope**
-- National or regional calibration → lower risk of Iowa-specific circularity  
-- State-specific calibration → higher risk  
-
-**Segment-level correction or blending**
-- Are counted links (or nearby segments) directly adjusted to match DOT values?
-
-This presents the greatest risk because agreement could be created “by construction.”
-
-**Leakage controls**
-- Are nearby counters grouped during validation?
-- Are folds designed to avoid near-duplicates?
-
-These steps help maintain independence between training and testing.
-
-### Evidence currently available
-
-**StreetLight documentation**
-- Reports stratified k-fold cross-validation with held-out counters  
-- Indicates counts contribute to calibration  
-- Accuracy is evaluated out-of-sample  
-
-This is consistent with standard modeling practice rather than direct substitution of DOT data.
-
-**FHWA guidance**
-- Complete separation between calibration and evaluation is rarely feasible  
-- Independent holdouts are recommended  
-- Some calibration use of counts is acceptable if testing remains independent  
-
-Independence is therefore treated primarily as a **validation design issue**, not absolute exclusion of counts.
-
-**Minnesota evaluation**
-- Approximately 65 permanent counters used for training were removed from evaluation  
-- Accuracy changed little except at very low volumes  
-
-Interpretation:
-- If StreetLight were directly copying counts, accuracy would drop noticeably  
-- Minimal change suggests the model generalizes from probe data rather than anchoring to specific counters  
-
-### What we can say with confidence
-
-- StreetLight uses probe-derived modeled volumes  
-- Counts are used for calibration and validation  
-- Holdout testing is employed  
-- Independent testing suggests no mechanical anchoring to specific counters  
-- Strong agreement with DOT counts is therefore expected  
-
-### What remains uncertain
-
-Documentation alone cannot determine:
-
-- how much Iowa-specific data enter calibration  
-- which Iowa sites or years are used  
-- whether Iowa evaluation locations are fully held out  
-- whether any segment-level blending or corrections occur  
-
-Answering these requires vendor clarification or Iowa-specific testing.
-
-### Practical takeaway
-
-Methodological independence depends on **how the model is built and validated**, not how correlated the results appear.
-
-Current evidence supports:
-- probe-driven modeling  
-- holdout-based evaluation  
-- limited risk of circularity  
-
-Further confirmation would come from:
-- explicit vendor documentation, or  
-- targeted Iowa holdout analyses
+Current evidence indicates that Iowa DOT counts are used for calibration and validation rather than direct estimation, though documentation does not fully rule out the use of Iowa-specific count data during model training.
 
 # References
