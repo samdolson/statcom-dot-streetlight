@@ -1,0 +1,161 @@
+---
+title: "InitialCheck"
+output: pdf_document
+---
+
+This is just to see if there's a difference between the initial file and the conflation file in terms of general coverage (counts). 
+
+```{r, echo = F, warning = F, message = F}
+library(tidyverse)
+library(sf) # geospatial package
+library(leaflet) # maps
+library(here) # directory stuff
+library(readxl)
+
+conf2022 <- st_read(here("FromDOT/12172025_Materials/DATA/CONFLATED/2022.shp"), as_tibble = TRUE, quiet = TRUE)
+conf2024 <- st_read(here("FromDOT/12172025_Materials/DATA/CONFLATED/2024.shp"), as_tibble = TRUE, quiet = TRUE)
+initialDat <- read_excel(here("FromDOT/11172025_Materials/IA_SLD_portable_AADT_2021-2023_final.xlsx"))
+```
+
+Well, it's obvious at first glance that the datasets are different, even after accounting for year 
+
+```{r, echo = F}
+initialDat |> 
+  group_by(year) |>
+  summarize(count = n())
+```
+
+# Buckets 
+
+## Volume Bucket Definitions Used Across Papers
+
+### MnDOT / Agency Evaluation Volume Buckets
+
+These buckets are used for policy evaluation and approval of probe-based AADT estimates.
+
+| Bucket Name | AADT Range |
+|------------|-----------|
+| Lower-volume evaluation | 7,500 – 9,999 |
+| Medium-volume evaluation | 10,000 – 19,999 |
+| High-volume evaluation | $\geq$ 20,000 |
+
+**Source:**  
+*2024 MnDOT Mobile Source Data for AADT Implementation Analysis*, pages 1–2
+
+---
+
+### FHWA Benchmark Volume Categories
+
+These categories are used as regulatory benchmarks for accuracy and precision when evaluating AADT estimation methods.
+
+| FHWA Category | AADT Range |
+|--------------|-----------|
+| Low | 500 – 4,999 |
+| Medium | 5,000 – 54,999 |
+| High | $\leq$ 55,000 |
+
+**Source:**  
+*StreetLight AADT 2024 – Initial Release: Methodology and Validation White Paper*, pages 6–8
+
+---
+
+### StreetLight Internal Road-Size Buckets
+
+These are the granular volume bins used internally by StreetLight for model training, cross-validation, and error reporting.
+
+| Road Size Label | AADT Range |
+|----------------|-----------|
+| A | 0 – 499 |
+| B | 500 – 1,999 |
+| C | 2,000 – 4,999 |
+| D | 5,000 – 9,999 |
+| E | 10,000 – 19,999 |
+| F | 20,000 – 34,999 |
+| G | 35,000 – 54,999 |
+| H | 55,000 – 84,999 |
+| I | 85,000 – 124,999 |
+| J | $\geq$ 125,000 |
+
+**Source:**  
+*StreetLight AADT 2024 – Initial Release: Methodology and Validation White Paper*, page 9 (Table 4)
+
+### Recommended Composite 
+
+I recommend using a composite AADT bucketing scheme that combines FHWA benchmark categories with MnDOT operational thresholds, using JACKALOPE-produced AADT estimates as the reference (“ground truth”) for validation and comparison.
+
+FHWA guidance recommends evaluating AADT accuracy within broad volume ranges to account for volume-dependent error characteristics, while allowing agencies to refine or subdivide those ranges when supported by local data and intended use. MnDOT’s recent implementation work further indicates a meaningful performance distinction near 20,000 AADT. Motivated by these considerations, we subdivide the FHWA “medium” category at 20,000 AADT to better reflect observed accuracy behavior while remaining consistent with FHWA benchmarking structure.
+
+| FHWA-Based Category | AADT Range |
+|-------------------|-----------|
+| Low | 500 – 4,999 |
+| Medium | 5,000 – < 20,000 |
+| Medium–High | 20,000 – 54,999 |
+| High | $\geq$ 55,000 |
+
+# Metrics
+
+## Key Metrics 
+
+### Mean Absolute Percentage Error (MAPE)
+
+$$
+\text{MAPE}
+=
+\frac{1}{n}
+\sum_{i=1}^{n}
+\left|
+\frac{\hat{AADT}_i - AADT_i}{AADT_i}
+\right|
+\times 100
+$$
+
+**Source:**  
+*StreetLight AADT 2024 – Initial Release: Methodology and Validation White Paper*, page 5
+
+### Normalized Root Mean Square Error (NRMSE)
+
+$$
+\text{NRMSE}
+=
+\frac{
+\sqrt{\frac{1}{n}\sum_{i=1}^{n}(\hat{AADT}_i - AADT_i)^2}
+}{
+AADT
+}
+\times 100
+$$
+
+**Source:**  
+*StreetLight AADT 2024 – Initial Release: Methodology and Validation White Paper*, page 5
+
+### Median Percentage Error (Bias)
+
+$$
+\text{Median Percentage Error}
+=
+\text{median}
+\left(
+\frac{\hat{AADT}_i - AADT_i}{AADT_i}
+\right)
+\times 100
+$$
+
+**Source:**  
+*StreetLight AADT 2024 – Initial Release: Methodology and Validation White Paper*, page 5  
+
+\newpage 
+
+## Compilation of Metrics Used in Papers
+
+| Metric Name | Metric Formula / Definition | Source (File, Page) |
+|------------|-----------------------------|----------------------|
+| Mean Absolute Percentage Error (MAPE) | $\displaystyle \text{MAPE} = \frac{1}{n} \sum_{i=1}^n \left| \frac{\hat{AADT}_i - AADT_i}{AADT_i} \right| \times 100$ | *StreetLight AADT 2024 Initial Release: Methodology and Validation White Paper*, p. 5 |
+| Normalized Root Mean Square Error (NRMSE) | $\displaystyle \text{NRMSE} = \frac{\sqrt{\frac{1}{n}\sum_{i=1}^n(\hat{AADT}_i - AADT_i)^2}}{AADT} \times 100$ | *StreetLight AADT 2024 Initial Release: Methodology and Validation White Paper*, p. 5 |
+| Bias (Median Percentage Error) | $\displaystyle \text{Bias} = \text{median}\left( \frac{\hat{AADT}_i - AADT_i}{AADT_i} \right) \times 100$ | *StreetLight AADT 2024 Initial Release: Methodology and Validation White Paper*, p. 5 |
+| 68th Percentile Absolute Percentage Error | 68th percentile of $\left| \frac{\hat{AADT}_i - AADT_i}{AADT_i} \right| \times 100$ | *StreetLight AADT 2024 Initial Release: Methodology and Validation White Paper*, pp. 5, 9 |
+| 95th Percentile Absolute Percentage Error | 95th percentile of $\left| \frac{\hat{AADT}_i - AADT_i}{AADT_i} \right| \times 100$ | *StreetLight AADT 2024 Initial Release: Methodology and Validation White Paper*, pp. 5, 9 |
+| Maximum Error Range (FHWA benchmark) | FHWA-defined absolute percent error threshold by volume class (e.g., ±33.6% for 5,000–54,999 AADT) | *StreetLight AADT 2024 Initial Release: Methodology and Validation White Paper*, pp. 6–8 |
+| Number of Sites Exceeding Maximum Error Range | Count of sites with absolute percent error exceeding FHWA maximum error range, compared to allowable count based on sample size | *StreetLight AADT 2024 Initial Release: Methodology and Validation White Paper*, pp. 6–8 |
+| Standard Deviation of Absolute Percent Error | $\displaystyle \text{SD}\left( \left| \frac{\hat{AADT}_i - AADT_i}{AADT_i} \right| \times 100 \right)$ | *2024 MnDOT Mobile Source Data for AADT Implementation Analysis*, p. 1 |
+| Signed Percent Error | $\displaystyle \frac{\hat{AADT}_i - AADT_i}{AADT_i} \times 100$ | *2024 MnDOT Mobile Source Data for AADT Implementation Analysis*, p. 1 |
+| Median Difference (Wilcoxon Signed-Rank Test) | Median of $\hat{AADT}_i - AADT_i$; tested against zero using Wilcoxon signed-rank test | *2024 MnDOT Mobile Source Data for AADT Implementation Analysis*, p. 2 |
