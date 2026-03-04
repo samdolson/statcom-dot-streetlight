@@ -1,0 +1,590 @@
+---
+title: "Report"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r, echo = F, warning = F, message = F}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+library(tidyverse)
+library(tidyr)
+library(dplyr)
+library(sf)
+library(leaflet)
+library(here)
+library(readxl)
+library(gridExtra)
+library(knitr)
+library(kableExtra)
+
+conf2022    <- st_read(here("FromDOT/12172025_Materials/DATA/CONFLATED/2022.shp"), as_tibble = TRUE, quiet = TRUE)
+conf2024    <- st_read(here("FromDOT/12172025_Materials/DATA/CONFLATED/2024.shp"), as_tibble = TRUE, quiet = TRUE)
+initialDat  <- read_excel(here("FromDOT/11172025_Materials/IA_SLD_portable_AADT_2021-2023_final.xlsx"))
+
+bucket_label_mndot <- function(aadt) {
+  case_when(
+    aadt < 7500                    ~ "Sub-7,500",
+    aadt >= 7500  & aadt <= 9999   ~ "(7,500-9,999)",
+    aadt >= 10000 & aadt <= 19999  ~ "(10,000-19,999)",
+    aadt >= 20000                  ~ "(>=20,000)",
+    TRUE                           ~ NA_character_
+  )
+}
+
+bucket_levels <- c("Sub-7,500", "(7,500-9,999)", "(10,000-19,999)", "(>=20,000)")
+
+threshold <- 100
+```
+
+# Overall RQ 1 & RQ 2 
+
+## RQ 1
+
+StreetLight AADT estimates perform reliably on higher-volume Iowa interstate segments and are broadly consistent with independent validation benchmarks from Minnesota DOT. For road segments carrying 10,000 or more vehicles per day — the primary corridors of 
+interest — average errors range from roughly 7% to 11%, which falls within acceptable bounds under both MN DOT and FHWA guidance. Accuracy degrades at lower volume ranges, and segments below 7,500 AADT exhibit error levels too high to support direct  substitution for official counts.
+
+Across all volume buckets, StreetLight estimates tend to run slightly higher than Iowa DOT counts. This directional tendency is consistent and modest on higher-volume roads, but becomes more pronounced at lower volumes.
+
+Overall, the results support using StreetLight AADT estimates as a credible, independently generated source for higher-volume Iowa interstate segments, with the recommendation that low-volume segments be treated with appropriate caution.
+
+Note: MN DOT applies a data quality filter before computing its published accuracy metrics — a step not applied here — so some portion of the gap between Iowa and Minnesota results is methodological rather than reflective of true differences in estimate quality.
+
+## RQ 2 
+
+StreetLight volume estimates and Iowa DOT counts should align closely because both systems measure the same underlying traffic volumes. High agreement is therefore expected but does not, by itself, imply that the two data sources are methodologically dependent.
+
+The relevant concern is not agreement, but whether Iowa DOT counts are used to directly produce StreetLight estimates (what I will henceforth refer to as "methodological independence"). Based on available StreetLight documentation, FHWA guidance, and independent state-level evaluations (including Minnesota DOT), current evidence supports StreetLight estimates being primarily probe-driven, with DOT counts used for calibration and validation, rather than for direct substitution or enforcement of agreement at specific locations.
+
+To emphasize the distinction: Calibration can improve model performance without compromising methodological independence, provided that evaluation is conducted on held-out data. As a matter of due diligence, however, confirmation of methodological independence would benefit from explicit vendor clarification that Iowa DOT count data are not used as direct inputs to model training or segment-level estimation, but are limited to calibration and validation, and that the StreetLight methodology does not incorporate Iowa DOT data in a manner that would directly constrain estimated volumes.
+
+# RQ 1: Differences in Estimates 
+
+## Recommended Bucketing
+
+MN DOT buckets are used here to allow for direct comparison against an independent 
+benchmark. The four buckets and their AADT ranges are as follows:
+
+| Bucket Name | AADT Range |
+|------------|-----------|
+| Sub-7,500 | < 7,500 | 
+| Lower-volume evaluation | 7,500 – 9,999 |
+| Medium-volume evaluation | 10,000 – 19,999 |
+| High-volume evaluation | $\geq$ 20,000 |
+
+The 2022 and 2024 conflated datasets are treated as separate replicates of the analysis. The road segments in those files correspond directly to Iowa interstates of interest; the original Iowa DOT data, while more numerous, included segments outside the scope of this work.
+
+## Accuracy Assessment 
+
+Comparing StreetLight AADT estimates against Iowa DOT counts, accuracy is broadly consistent with MN DOT's 2024 validation in terms of error magnitude, though Iowa estimates are systematically higher across all buckets. This is expected, as MN DOT applies a percent-change tolerance screen prior to computing accuracy metrics — locations where estimated AADT deviates from the prior official count by more than 15% (for volumes between 5,000 and 49,999) or more than 10% (for volumes $\geq$ 50,000) are excluded from evaluation or flagged for recount. No such filter is applied here, which is expected to yield higher error values.
+
+For the $\geq$ 20,000 AADT bucket, MAPE ranges from 6.8% (2024) to 8.6% (2022), modestly above MN DOT's reported 5.81%. Signed percent error is positive at approximately 4.3% to 4.6%, in contrast to MN DOT's slight negative bias of $-3.25\%$, indicating a mild tendency toward overestimation in the Iowa data. NRMSE is 9.0% to 10.7%, and APE SD is 6.9% to 9.1%. Taken together, these error levels are low in absolute terms and consistent with reliable probe-based estimation on higher-volume roadways.
+
+In the 10,000 to 19,999 bucket, MAPE is 9.6% to 11.0%, compared to MN DOT's 6.28%. Signed errors are positive (4.6% to 5.8%) versus MN DOT's near-zero 0.26%, again reflecting a consistent overestimation tendency. APE SD (11.9% to 13.8%) is approximately double MN DOT's 4.98%, suggesting higher variability across segments even where average accuracy is reasonable.
+
+In the 7,500 to 9,999 bucket, MAPE is 13.0% to 15.3%, somewhat above MN DOT's 12.16%. Signed errors are positive at 7.3% to 10.2%, a notable directional contrast to MN DOT's $-4.02\%$. APE SD is elevated at 18.5% to 22.0% versus MN DOT's 8.30%, indicating considerable segment-to-segment variability at this volume range.
+
+For the Sub-7,500 bucket — not reported in the MN DOT study — errors are substantially higher and merit particular caution. MAPE ranges from 38.7% (2024) to 47.5% (2022), and NRMSE from 49.1% to 66.3%. Notably, the 2022 APE SD of 150.3% indicates extreme variability across segments in that year, well above the more moderate 46.6% observed in 2024. Regardless, error levels in this bucket are high enough that StreetLight estimates below 7,500 AADT should not be substituted for official counts without substantial additional scrutiny.
+
+Note: MN DOT's published accuracy metrics represent performance *conditional on passing an operational plausibility screen*, whereas the present analysis evaluates all sites without such filtering. More details on MN DOT's procedure are described in the *2024 Mobile Source Data for AADT Implementation Analysis* (Methodology section).
+
+## Coverage 
+
+```{r, echo = F}
+conf2022_ll <- st_transform(conf2022, 4326)
+conf2024_ll <- st_transform(conf2024, 4326)
+
+leaflet(conf2022_ll) |>
+  addTiles() |>
+  addPolylines(color = "#1F78B4", weight = 3, opacity = 0.9) |>
+  addLegend(position = "bottomright", colors = "#1F78B4",
+            labels = "Conflated Segments", title = "2022 Coverage", opacity = 0.9)
+
+leaflet(conf2024_ll) |>
+  addTiles() |>
+  addPolylines(color = "#1F78B4", weight = 3, opacity = 0.9) |>
+  addLegend(position = "bottomright", colors = "#1F78B4",
+            labels = "Conflated Segments", title = "2024 Coverage", opacity = 0.9)
+```
+
+## Metrics Comparison
+
+### Summary 
+
+```{r, echo = F, message = F, warning = F}
+summarise_one_year_mndot <- function(dat) {
+  dat |>
+    st_drop_geometry() |>
+    filter(!is.na(AADT_IADOT), !is.na(VOLUME_STL), AADT_IADOT > 0) |>
+    mutate(
+      bucket = bucket_label_mndot(AADT_IADOT),
+      ape = abs((VOLUME_STL - AADT_IADOT) / AADT_IADOT) * 100,
+      pe = (VOLUME_STL - AADT_IADOT) / AADT_IADOT * 100,
+      se = (VOLUME_STL - AADT_IADOT)^2
+    ) |>
+    filter(!is.na(bucket)) |>
+    group_by(bucket) |>
+    summarise(
+      n = n(),
+      MAPE = mean(ape, na.rm = TRUE),
+      Median_Percent_Error = median(pe, na.rm = TRUE),
+      Mean_PE = mean(pe, na.rm = TRUE),
+      APE_SD = sd(ape, na.rm = TRUE),        
+      NRMSE = sqrt(mean(se, na.rm = TRUE)) / mean(AADT_IADOT, na.rm = TRUE) * 100,
+      .groups = "drop"
+    ) |>
+    arrange(
+      factor(bucket, levels = c(
+        "Sub-7,500",
+        "(7,500-9,999)",
+        "(10,000-19,999)",
+        "(>=20,000)"
+      ))
+    )
+}
+
+summary_2022 <- summarise_one_year_mndot(conf2022)
+summary_2024 <- summarise_one_year_mndot(conf2024)
+
+kable(
+  summary_2022,
+  caption = "MnDOT AADT Accuracy Summary — 2022",
+  col.names = c("AADT Bucket", "n", "MAPE (%)", "Median % Error", "Mean % Error", "APE SD (%)", "NRMSE (%)"),
+  digits = 2,
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+kable(
+  summary_2024,
+  caption = "MnDOT AADT Accuracy Summary — 2024",
+  col.names = c("AADT Bucket", "n", "MAPE (%)", "Median % Error", "Mean % Error", "APE SD (%)", "NRMSE (%)"),
+  digits = 2,
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+```
+
+### Bucketing 
+
+```{r, echo = F, message = F, warning = F}
+make_bucket_table <- function(data, title) {
+  df <- st_drop_geometry(data)
+  
+  iadot <- df |>
+    mutate(Bucket = factor(bucket_label_mndot(AADT_IADOT), levels = bucket_levels)) |>
+    count(Bucket, .drop = FALSE) |>
+    rename(`IADOT n` = n)
+  
+  stl <- df |>
+    mutate(Bucket = factor(bucket_label_mndot(VOLUME_STL), levels = bucket_levels)) |>
+    count(Bucket, .drop = FALSE) |>
+    rename(`StreetLight n` = n)
+  
+  left_join(iadot, stl, by = "Bucket") |>
+    mutate(
+      `Difference (STL - IADOT)` = `StreetLight n` - `IADOT n`,
+      `% Difference` = ifelse(
+        `IADOT n` == 0, NA,
+        round((`StreetLight n` - `IADOT n`) / `IADOT n` * 100, 1)
+      )
+    ) |>
+    kable(caption = title, format.args = list(big.mark = ",")) |>
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+}
+
+make_bucket_table(conf2022, "AADT Bucket Comparison — 2022")
+make_bucket_table(conf2024, "AADT Bucket Comparison — 2024")
+```
+
+### MAPE 
+
+```{r, echo = F, message = F, warning = F}
+mn_mape_ref <- tibble(
+  Bucket = c(
+    "Sub-7,500",
+    "(7,500-9,999)",
+    "(10,000-19,999)",
+    "(>=20,000)"
+  ),
+  MAPE_MN = c(NA, 12.16, 6.28, 5.81)
+)
+
+tab_mape_2022 <- summary_2022 |>
+  transmute(Bucket = bucket, n, MAPE = round(MAPE, 2)) |>
+  left_join(mn_mape_ref, by = "Bucket")
+
+tab_mape_2024 <- summary_2024 |>
+  transmute(Bucket = bucket, n, MAPE = round(MAPE, 2)) |>
+  left_join(mn_mape_ref, by = "Bucket")
+
+kable(
+  tab_mape_2022,
+  caption = "MAPE by AADT Bucket — 2022",
+  col.names = c("AADT Bucket", "n", "MAPE (%)", "MN MAPE (%)"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+kable(
+  tab_mape_2024,
+  caption = "MAPE by AADT Bucket — 2024",
+  col.names = c("AADT Bucket", "n", "MAPE (%)", "MN MAPE (%)"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+```
+
+### Signed Percent Error 
+
+```{r, echo = F, message = F, warning = F}
+mn_spe_ref <- tibble(
+  Bucket = c(
+    "Sub-7,500",
+    "(7,500-9,999)",
+    "(10,000-19,999)",
+    "(>=20,000)"
+  ),
+  SPE_MN = c(NA, -4.02, 0.26, -3.25)
+)
+
+tab_spe_2022 <- summary_2022 |>
+  transmute(Bucket = bucket, n, Mean_PE = round(Mean_PE, 2)) |>
+  left_join(mn_spe_ref, by = "Bucket")
+
+tab_spe_2024 <- summary_2024 |>
+  transmute(Bucket = bucket, n, Mean_PE = round(Mean_PE, 2)) |>
+  left_join(mn_spe_ref, by = "Bucket")
+
+kable(
+  tab_spe_2022,
+  caption = "Signed Percent Error by AADT Bucket — 2022",
+  col.names = c("AADT Bucket", "n", "Signed % Error", "MN Signed % Error"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+kable(
+  tab_spe_2024,
+  caption = "Signed Percent Error by AADT Bucket — 2024",
+  col.names = c("AADT Bucket", "n", "Signed % Error", "MN Signed % Error"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+```
+
+### Absolute Percent Error Standard Deviation
+
+```{r, echo = F, message = F, warning = F}
+### Absolute Percent Error Standard Deviation
+mn_ape_sd_ref <- tibble(
+  Bucket = c(
+    "Sub-7,500",
+    "(7,500-9,999)",
+    "(10,000-19,999)",
+    "(>=20,000)"
+  ),
+  APE_SD_MN = c(NA, 8.30, 4.98, 4.42)
+)
+
+tab_ape_sd_2022 <- summary_2022 |>
+  transmute(Bucket = bucket, n, APE_SD = round(APE_SD, 2)) |>
+  left_join(mn_ape_sd_ref, by = "Bucket")
+
+tab_ape_sd_2024 <- summary_2024 |>
+  transmute(Bucket = bucket, n, APE_SD = round(APE_SD, 2)) |>
+  left_join(mn_ape_sd_ref, by = "Bucket")
+
+kable(
+  tab_ape_sd_2022,
+  caption = "APE Standard Deviation by AADT Bucket — 2022",
+  col.names = c("AADT Bucket", "n", "APE SD (%)", "MN APE SD (%)"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+kable(
+  tab_ape_sd_2024,
+  caption = "APE Standard Deviation by AADT Bucket — 2024",
+  col.names = c("AADT Bucket", "n", "APE SD (%)", "MN APE SD (%)"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+```
+
+## Additional Metrics
+
+### Median Percent Error 
+
+```{r, echo = F, message = F, warning = F}
+tab_mpe_2022 <- summary_2022 |>
+  transmute(Bucket = bucket, n, Median_Percent_Error = round(Median_Percent_Error, 2))
+
+tab_mpe_2024 <- summary_2024 |>
+  transmute(Bucket = bucket, n, Median_Percent_Error = round(Median_Percent_Error, 2))
+
+kable(
+  tab_mpe_2022,
+  caption = "Median Percent Error by AADT Bucket — 2022",
+  col.names = c("AADT Bucket", "n", "Median % Error"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+kable(
+  tab_mpe_2024,
+  caption = "Median Percent Error by AADT Bucket — 2024",
+  col.names = c("AADT Bucket", "n", "Median % Error"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+```
+
+### NRMSE
+
+```{r, echo = F, message = F, warning = F}
+tab_nrmse_2022 <- summary_2022 |> transmute(Bucket = bucket, n, NRMSE = round(NRMSE, 2))
+tab_nrmse_2024 <- summary_2024 |> transmute(Bucket = bucket, n, NRMSE = round(NRMSE, 2))
+
+kable(
+  tab_nrmse_2022,
+  caption = "NRMSE by AADT Bucket — 2022",
+  col.names = c("AADT Bucket", "n", "NRMSE (%)"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+kable(
+  tab_nrmse_2024,
+  caption = "NRMSE by AADT Bucket — 2024",
+  col.names = c("AADT Bucket", "n", "NRMSE (%)"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+```
+
+## Metrics
+
+### Mean Absolute Percentage Error (MAPE)
+
+$$
+\text{MAPE}
+=
+\frac{1}{n}
+\sum_{i=1}^{n}
+\left|
+\frac{\text{Streetlight}_i - \text{AADT}_i}{\text{AADT}_i}
+\right|
+\times 100
+$$
+
+MAPE measures average accuracy as a percentage of the reference (IADOT) count, ignoring the direction of error. Each segment's absolute percentage deviation from the ground-truth AADT is averaged across all segments in the bucket. Lower values indicate better accuracy; a MAPE of 0 would indicate perfect agreement.
+
+---
+
+### Mean Signed Percentage Error (Bias)
+
+$$
+\text{Mean Signed \% Error}
+=
+\frac{1}{n}
+\sum_{i=1}^{n}
+\frac{\text{Streetlight}_i - \text{AADT}_i}{\text{AADT}_i}
+\times 100
+$$
+
+Unlike MAPE, signed errors are not absolute — overestimates and underestimates offset one another. A positive mean indicates that StreetLight tends to *overestimate* volume relative to IADOT counts; a negative mean indicates systematic *underestimation*. Values near zero suggest that errors are roughly balanced in direction, even if individual segment-level errors are large.
+
+---
+
+### Median Percentage Error
+
+$$
+\text{Median \% Error}
+=
+\text{median}
+\left(
+\frac{\text{Streetlight}_i - \text{AADT}_i}{\text{AADT}_i}
+\times 100
+\right)
+$$
+
+The median signed percentage error provides a more robust measure of central tendency than the mean, as it is less sensitive to extreme over- or underestimates on individual segments. It is interpreted in the same directional sense as the mean signed percentage error, but better reflects the *typical* segment's bias when the distribution of errors is skewed.
+
+**Source:**\
+*StreetLight AADT 2024 – Initial Release: Methodology and Validation White Paper*, page 5
+
+---
+
+### APE Standard Deviation
+
+$$
+\text{APE SD}
+=
+\text{sd}
+\left(
+\left|
+\frac{\text{Streetlight}_i - \text{AADT}_i}{\text{AADT}_i}
+\right|
+\times 100
+\right)
+$$
+
+The standard deviation of the absolute percentage errors measures the *consistency* of accuracy across segments within a bucket. A low APE SD alongside a low MAPE indicates that StreetLight performs reliably across segments; a high APE SD suggests that accuracy varies considerably from segment to segment, even if the average error is acceptable.
+
+---
+
+### Normalized Root Mean Square Error (NRMSE)
+
+$$
+\text{NRMSE}
+=
+\frac{
+\sqrt{\frac{1}{n}\sum_{i=1}^{n}(\text{Streetlight}_i - \text{AADT}_i)^2}
+}{
+\overline{\text{AADT}}
+}
+\times 100
+$$
+
+NRMSE penalizes large errors more heavily than MAPE by squaring deviations before averaging, making it sensitive to outlier segments with especially poor agreement. Normalizing by the mean AADT within the bucket expresses the error as a percentage of typical volume, enabling comparison across buckets with different volume scales.
+
+**Source:**\
+*StreetLight AADT 2024 – Initial Release: Methodology and Validation White Paper*, page 5
+
+# RQ 2: Independence 
+
+## Summary
+
+Based on publicly available documentation and independent evaluations:
+
+- StreetLight estimates are derived primarily from probe/mobile/GPS data, not directly from DOT traffic counters (StreetLight documentation)
+- Traffic counts are used mainly for model calibration and accuracy assessment, consistent with standard traffic modeling practice (StreetLight documentation; FHWA guidance)
+- Out-of-sample (holdout) testing is explicitly reported in validation studies, which reduces the risk of circularity (StreetLight documentation)
+- The primary unresolved issue is the *extent of Iowa-specific count data used during calibration*, which represents the main remaining risk to full independence
+
+### Implications
+
+- The principal risk to monitor is *local calibration or segment-level adjustment using Iowa DOT counters*
+- Strong agreement between DOT counts and StreetLight estimates is expected, given that both estimate "true traffic volume"
+- Correlation or low error alone cannot diagnose methodological dependence (statistical tests of independence are limited in scope)
+- Definitive confirmation of methodological independence requires vendor disclosure or Iowa-specific holdout testing, not additional statistical comparisons alone
+
+Taken together, current evidence supports interpreting StreetLight volumes as independently generated but empirically calibrated, consistent with FHWA-recommended validation practice.
+
+## Details
+
+The following provides further detail on the basis for this assessment: why agreement is expected, how independence should be evaluated, what evidence is currently available, and what uncertainties remain.
+
+### Why Agreement Is Expected
+
+When comparing StreetLight estimates to Iowa DOT observed counts, high correlation is inevitable because both aim to measure the same latent quantity: true average annual traffic volume.
+
+- High correlation is therefore necessary but not diagnostic.
+- The relevant question is not *whether* the estimates agree, but *why* they agree.
+
+### What Methodological Independence Means in Practice
+
+Methodological independence depends on *how counts enter the modeling pipeline*, not
+whether they appear anywhere in it:
+
+- **Acceptable:** Counts used for calibration and model tuning, with performance evaluated on held-out sites (FHWA guidance)
+- **Problematic:** Counts directly constraining, replacing, or being used as an input for estimating specific segments
+
+The practical question is:
+
+> To what extent are Iowa DOT counts used to *produce* StreetLight Iowa estimates,
+> rather than simply evaluate them?
+
+Current evidence indicates that Iowa DOT counts are used for calibration and validation rather than direct estimation, though documentation does not fully rule out the use of Iowa-specific count data during model training.
+
+# Segment-Level Diagnostics
+
+Segments where StreetLight APE exceeds `r threshold`% in *both* 2022 and 2024 are flagged below. Requiring the threshold to be met in both years reduces the likelihood of flagging segments with one-off data issues in a single year. A threshold of 100% indicates StreetLight volume is more than double (or less than half) the IADOT count; this conservative threshold is used here to surface only the most severe and persistent discrepancies.
+
+```{r, echo = F, message = F, warning = F}
+flag_segments <- function(data) {
+  data |>
+    st_drop_geometry() |>
+    filter(!is.na(AADT_IADOT), !is.na(VOLUME_STL), AADT_IADOT > 0) |>
+    mutate(APE = abs((VOLUME_STL - AADT_IADOT) / AADT_IADOT) * 100,
+           PE  = (VOLUME_STL - AADT_IADOT) / AADT_IADOT * 100)
+}
+
+flagged_2022 <- flag_segments(conf2022) |>
+  filter(APE > threshold) |>
+  select(segment_id, AADT_IADOT, VOLUME_STL, APE, PE)
+
+flagged_2024 <- flag_segments(conf2024) |>
+  filter(APE > threshold) |>
+  select(segment_id, AADT_IADOT, VOLUME_STL, APE, PE)
+
+# Segments problematic in BOTH years
+problematic_ids <- inner_join(
+  flagged_2022, flagged_2024,
+  by = "segment_id",
+  suffix = c("_2022", "_2024")
+)
+
+# Re-attach geometry from 2022 for mapping (either year's geometry will do)
+problematic_sf <- conf2022 |>
+  filter(segment_id %in% problematic_ids$segment_id) |>
+  left_join(problematic_ids, by = "segment_id") |>
+  st_transform(4326)
+
+# Map
+leaflet(problematic_sf) |>
+  addTiles() |>
+  addPolylines(
+    color = "red", weight = 3, opacity = 0.9,
+    popup = ~paste0(
+      "<b>Segment:</b> ", segment_id, "<br>",
+      "<b>2022 APE:</b> ", round(APE_2022, 1), "%<br>",
+      "<b>2024 APE:</b> ", round(APE_2024, 1), "%<br>",
+      "<b>2022 PE:</b> ",  round(PE_2022, 1),  "%<br>",
+      "<b>2024 PE:</b> ",  round(PE_2024, 1),  "%"
+    )
+  ) |>
+  addLegend(position = "bottomright", colors = "red",
+            labels = paste0("Problematic Segments (APE > ", threshold, "% both years)"),
+            opacity = 0.9)
+```
+
+```{r, echo = F, message = F, warning = F}
+problematic_ids |>
+  mutate(`Deviation - Overall` = round((APE_2022 + APE_2024) / 2, 1),
+         `Deviation - 2022`    = round(APE_2022, 1),
+         `Deviation - 2024`    = round(APE_2024, 1)) |>
+  select(ID = segment_id, `Deviation - Overall`, `Deviation - 2022`, `Deviation - 2024`) |>
+  arrange(desc(`Deviation - Overall`)) |>
+  kable(caption = paste0("Problematic Segments (APE > ", threshold, "% in Both Years)"),
+        format.args = list(big.mark = ",")) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+problematic_ids |>
+  mutate(
+    `Deviation - Overall` = round((APE_2022 + APE_2024) / 2, 1),
+    `Deviation - 2022`    = round(APE_2022, 1),
+    `Deviation - 2024`    = round(APE_2024, 1),
+    `Difference - 2022`   = VOLUME_STL_2022 - AADT_IADOT_2022,
+    `Difference - 2024`   = VOLUME_STL_2024 - AADT_IADOT_2024
+  ) |>
+  select(
+    ID                    = segment_id,
+    `IADOT - 2022`        = AADT_IADOT_2022,
+    `STL - 2022`          = VOLUME_STL_2022,
+    `Difference - 2022`,
+    `Deviation - 2022`,
+    `IADOT - 2024`        = AADT_IADOT_2024,
+    `STL - 2024`          = VOLUME_STL_2024,
+    `Difference - 2024`,
+    `Deviation - 2024`,
+    `Deviation - Overall`
+  ) |>
+  arrange(desc(`Deviation - Overall`)) |>
+  kable(caption = paste0("Problematic Segments (APE > ", threshold, "% in Both Years)"),
+        format.args = list(big.mark = ",")) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) |>
+  add_header_above(c(" " = 1, "2022" = 4, "2024" = 4, " " = 1))
+```

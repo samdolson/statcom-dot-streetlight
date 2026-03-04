@@ -9,6 +9,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, echo = F, warning = F, message = F}
 library(tidyverse)
+library(tidyr)
+library(dplyr)
 library(sf) 
 library(leaflet)
 library(here) 
@@ -141,6 +143,47 @@ kable(
   format.args = list(big.mark = ",")
 ) |>
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+```
+
+### Bucketing 
+
+```{r, echo = F, message = F, warning = F}
+bucket_label_mndot <- function(aadt) {
+  case_when(
+    aadt < 7500 ~ "Sub-7,500",
+    aadt >= 7500 & aadt <= 9999 ~ "(7,500-9,999)",
+    aadt >= 10000 & aadt <= 19999 ~ "(10,000-19,999)",
+    aadt >= 20000 ~ "(>=20,000)",
+    TRUE ~ NA_character_
+  )
+}
+
+bucket_levels <- c("Sub-7,500", "(7,500-9,999)", "(10,000-19,999)", "(>=20,000)")
+
+make_bucket_table <- function(data, title) {
+  df <- st_drop_geometry(data)
+  
+  iadot <- df %>%
+    mutate(Bucket = factor(bucket_label_mndot(AADT_IADOT), levels = bucket_levels)) %>%
+    count(Bucket, .drop = FALSE) %>%
+    rename(`IADOT n` = n)
+  
+  stl <- df %>%
+    mutate(Bucket = factor(bucket_label_mndot(VOLUME_STL), levels = bucket_levels)) %>%
+    count(Bucket, .drop = FALSE) %>%
+    rename(`StreetLight n` = n)
+  
+  left_join(iadot, stl, by = "Bucket") %>%
+    mutate(
+      `Difference (STL - IADOT)` = `StreetLight n` - `IADOT n`,
+      `% Difference` = round((`StreetLight n` - `IADOT n`) / `IADOT n` * 100, 1)
+    ) %>%
+    kable(caption = title, format.args = list(big.mark = ",")) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+}
+
+make_bucket_table(conf2022, "AADT Bucket Comparison — 2022")
+make_bucket_table(conf2024, "AADT Bucket Comparison — 2024")
 ```
 
 ### MAPE 
