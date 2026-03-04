@@ -1,5 +1,5 @@
 ---
-title: "EstAssessment"
+title: "Initial Assessment"
 output: pdf_document
 ---
 
@@ -14,6 +14,8 @@ library(leaflet)
 library(here) 
 library(readxl)
 library(gridExtra)
+library(knitr)
+library(kableExtra)
 # library(knitr)
 # library(kableExtra)
 
@@ -22,27 +24,27 @@ conf2024 <- st_read(here("FromDOT/12172025_Materials/DATA/CONFLATED/2024.shp"), 
 initialDat <- read_excel(here("FromDOT/11172025_Materials/IA_SLD_portable_AADT_2021-2023_final.xlsx"))
 ```
 
-# Outline
+<!-- # Outline -->
 
-The goal of this document is to present the methodology used for comparing the Streetlight estimates to the Jackalope estimates, and the initial results of that analysis.
+<!-- The goal of this document is to present the methodology used for comparing the Streetlight estimates to the Jackalope estimates, and the initial results of that analysis. -->
 
-Note: This is purposely avoiding any spatial dependence structures, and is primarily intended as a rough idea of what we'd initially expect.
+<!-- Note: This is purposely avoiding any spatial dependence structures, and is primarily intended as a rough idea of what we'd initially expect. -->
 
-# Observations/Thoughts
+<!-- # Observations/Thoughts -->
 
-Comparing StreetLight AADT estimates against Iowa DOT counts, the accuracy of Streetlight estimates are similar in error magnitude and bias with MN DOT’s 2024 validation; a key caveat is that they systematically tend to be higher than the results of the MN DOT study, though this is most likely because no tolerance filtering was applied to the Iowa-based Streetlight estimates. 
+<!-- Comparing StreetLight AADT estimates against Iowa DOT counts, the accuracy of Streetlight estimates are similar in error magnitude and bias with MN DOT’s 2024 validation; a key caveat is that they systematically tend to be higher than the results of the MN DOT study, though this is most likely because no tolerance filtering was applied to the Iowa-based Streetlight estimates.  -->
 
-Specifically: 
+<!-- Specifically:  -->
 
-For the $\geq 20,000$ AADT group, MAPE ranges from 6.8% to 8.6%, closely matching MN DOT’s reported MAPE of 5.81% and slight negative bias of approximately $-3.25%$. These error levels are considered low under both MM DOT and FHWA guidance and provide evidence to support that probe-based AADT performs reliably on higher-volume roadways compared to lower-volume roadways.
+<!-- For the $\geq 20,000$ AADT group, MAPE ranges from 6.8% to 8.6%, closely matching MN DOT’s reported MAPE of 5.81% and slight negative bias of approximately $-3.25%$. These error levels are considered low under both MM DOT and FHWA guidance and provide evidence to support that probe-based AADT performs reliably on higher-volume roadways compared to lower-volume roadways. -->
 
-Accuracy of Streetlight estimates decreases in the 7,500 to 9,999 AADT range, where MAPE is approximately 13% to 15%. This is consistent with MN DOT’s reported MAPE of 12.2% for this volume bucket. And in the 10,000 to 19,999 AADT range, observed MAPEs are roughly 9% to 11%, fairly higher than MN DOT’s 6.28%. 
+<!-- Accuracy of Streetlight estimates decreases in the 7,500 to 9,999 AADT range, where MAPE is approximately 13% to 15%. This is consistent with MN DOT’s reported MAPE of 12.2% for this volume bucket. And in the 10,000 to 19,999 AADT range, observed MAPEs are roughly 9% to 11%, fairly higher than MN DOT’s 6.28%.  -->
 
-Lastly, for estimates below the 7,500 AADT range, while not a threshold reported in the MN Dot study, errors substantially increase, with MAPE on the order of 40% to 50% and NRMSE between roughly 50% and 65%. This is to be expected though, and is a generally does not correspond to road segments that are recommended to be substituted with Streetlight. 
+<!-- Lastly, for estimates below the 7,500 AADT range, while not a threshold reported in the MN Dot study, errors substantially increase, with MAPE on the order of 40% to 50% and NRMSE between roughly 50% and 65%. This is to be expected though, and is a generally does not correspond to road segments that are recommended to be substituted with Streetlight.  -->
 
-It is important to note that MN DOT computes its reported accuracy metrics after applying a percent-change acceptance (tolerance) rule. Under this rule, locations are excluded from evaluation (or otherwise subject to a recount) if the estimated AADT differs from the prior official AADT by more than 15% for volumes between 5,000 and 49,999, or more than 10% for volumes $\geq 50,000$. These rules are determined at MN DOT's discretion, though guided by the FHWA; since we do not have subject matter expertise on what would be appropriate for Iowa specifically, we do not apply any tolerance rule. Consequently, the above results may seem reasonable as we would expect less accurate metrics (e.g., should we use MN DOT's threshold, adopy higher threshold for the same volume bucket, adopt a lower threshold for an alternative volume bucket, etc.). 
+<!-- It is important to note that MN DOT computes its reported accuracy metrics after applying a percent-change acceptance (tolerance) rule. Under this rule, locations are excluded from evaluation (or otherwise subject to a recount) if the estimated AADT differs from the prior official AADT by more than 15% for volumes between 5,000 and 49,999, or more than 10% for volumes $\geq 50,000$. These rules are determined at MN DOT's discretion, though guided by the FHWA; since we do not have subject matter expertise on what would be appropriate for Iowa specifically, we do not apply any tolerance rule. Consequently, the above results may seem reasonable as we would expect less accurate metrics (e.g., should we use MN DOT's threshold, adopy higher threshold for the same volume bucket, adopt a lower threshold for an alternative volume bucket, etc.).  -->
 
-Note: More details on the procedure done by MN DOT is described in the 2024 Mobile Source Data for AADT Implementation Analysis (Methodology section). MN DOT’s published MAPEs represent accuracy *conditional on passing an operational plausibility screen*, whereas the present analysis evaluates all sites without such filtering, which is expected to yield slightly higher error values.
+<!-- Note: More details on the procedure done by MN DOT is described in the 2024 Mobile Source Data for AADT Implementation Analysis (Methodology section). MN DOT’s published MAPEs represent accuracy *conditional on passing an operational plausibility screen*, whereas the present analysis evaluates all sites without such filtering, which is expected to yield slightly higher error values. -->
 
 ## Recommended Bucketing
 
@@ -55,80 +57,35 @@ I recommend using the MN DOT buckets to allow for easy comparison.
 | Medium-volume evaluation | 10,000 – 19,999 |
 | High-volume evaluation | $\geq$ 20,000 |
 
-However, I also thought of an alternative composite AADT bucketing scheme that combines FHWA benchmark categories with MM DOT thresholds. The idea being that MN DOT bucketing doesn't exactly align with the overal FHWA guidance/recommendations. Whether this is a Goldilocks or a worst of both worlds remains to be seen. 
+<!-- However, I also thought of an alternative composite AADT bucketing scheme that combines FHWA benchmark categories with MM DOT thresholds. The idea being that MN DOT bucketing doesn't exactly align with the overal FHWA guidance/recommendations. Whether this is a Goldilocks or a worst of both worlds remains to be seen.  -->
 
-| FHWA-Based Category | AADT Range        |
-|---------------------|-------------------|
-| Sub-500             | \< 500            |
-| Low                 | 500 – 4,999       |
-| Medium              | 5,000 – \< 20,000 |
-| Medium–High         | 20,000 – 54,999   |
-| High                | $\geq$ 55,000     |
+<!-- | FHWA-Based Category | AADT Range        | -->
+<!-- |---------------------|-------------------| -->
+<!-- | Sub-500             | \< 500            | -->
+<!-- | Low                 | 500 – 4,999       | -->
+<!-- | Medium              | 5,000 – \< 20,000 | -->
+<!-- | Medium–High         | 20,000 – 54,999   | -->
+<!-- | High                | $\geq$ 55,000     | -->
 
-## Recommended Data Input(s)
+<!-- ## Recommended Data Input(s) -->
 
 I looked specifically at the 2022 and 2024 conflated data sources separately, looking at the metrics:
 
 This was to treat "Year" as an effective replicate of the analysis, with the added bonus of the road segments contained in the conflation file(s) directly corresponding to interstates of potential interest (the original data Iowa DOT sent, while more numerous, contained estimates on a number of segments not of interest or otherwise beyond the scope of our work).
 
-## Recommended Metric(s)
+\newpage 
 
-$$
-\text{MAPE}
-=
-\frac{1}{n}
-\sum_{i=1}^{n}
-\left|
-\frac{\hat{AADT}_i - AADT_i}{AADT_i}
-\right|
-\times 100
-$$
+# Initial Results -- MN DOT Replication 
 
-**Source:**\
-*StreetLight AADT 2024 – Initial Release: Methodology and Validation White Paper*, page 5
-
-### Median Percentage Error (Bias)
-
-$$
-\text{Median Percentage Error}
-=
-\text{median}
-\left(
-\frac{\hat{AADT}_i - AADT_i}{AADT_i}
-\right)
-\times 100
-$$
-
-**Source:**\
-*StreetLight AADT 2024 – Initial Release: Methodology and Validation White Paper*, page 5
-
-### Normalized Root Mean Square Error (NRMSE)
-
-$$
-\text{NRMSE}
-=
-\frac{
-\sqrt{\frac{1}{n}\sum_{i=1}^{n}(\hat{AADT}_i - AADT_i)^2}
-}{
-AADT
-}
-\times 100
-$$
-
-**Source:**\
-*StreetLight AADT 2024 – Initial Release: Methodology and Validation White Paper*, page 5
-
-# Initial Results
-
-## MN DOT Replication 
+## Summary 
 
 ```{r, echo = F, message = F, warning = F}
 bucket_label_mndot <- function(aadt) {
   case_when(
     aadt < 7500 ~ "Sub-7,500",
-    aadt >= 7500 & aadt <= 9999 ~ "Lower-volume evaluation (7,500-9,999)",
-    aadt >= 10000 & aadt <= 19999 ~ "Medium-volume evaluation (10,000-19,999)",
-    aadt >= 20000 ~ "High-volume evaluation (>=20,000)",
+    aadt >= 7500 & aadt <= 9999 ~ "(7,500-9,999)",
+    aadt >= 10000 & aadt <= 19999 ~ "(10,000-19,999)",
+    aadt >= 20000 ~ "(>=20,000)",
     TRUE ~ NA
   )
 }
@@ -149,125 +106,188 @@ summarise_one_year_mndot <- function(dat) {
       n = n(),
       MAPE = mean(ape, na.rm = TRUE),
       Median_Percent_Error = median(pe, na.rm = TRUE),
+      Mean_PE = mean(pe, na.rm = TRUE),
+      APE_SD = sd(ape, na.rm = TRUE),        
       NRMSE = sqrt(mean(se, na.rm = TRUE)) / mean(AADT_IADOT, na.rm = TRUE) * 100,
       .groups = "drop"
     ) |>
     arrange(
       factor(bucket, levels = c(
         "Sub-7,500",
-        "Lower-volume evaluation (7,500-9,999)",
-        "Medium-volume evaluation (10,000-19,999)",
-        "High-volume evaluation (>=20,000)"
+        "(7,500-9,999)",
+        "(10,000-19,999)",
+        "(>=20,000)"
       ))
     )
 }
 
 summary_2022 <- summarise_one_year_mndot(conf2022)
 summary_2024 <- summarise_one_year_mndot(conf2024)
+
+kable(
+  summary_2022,
+  caption = "MnDOT AADT Accuracy Summary — 2022",
+  col.names = c("AADT Bucket", "n", "MAPE (%)", "Median % Error", "Mean % Error", "APE SD (%)", "NRMSE (%)"),
+  digits = 2,
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+kable(
+  summary_2024,
+  caption = "MnDOT AADT Accuracy Summary — 2024",
+  col.names = c("AADT Bucket", "n", "MAPE (%)", "Median % Error", "Mean % Error", "APE SD (%)", "NRMSE (%)"),
+  digits = 2,
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 ```
 
 ### MAPE 
 
 ```{r, echo = F, message = F, warning = F}
-tab_mape_2022 <- summary_2022 |> transmute(Bucket = bucket, n, MAPE = round(MAPE, 2))
-tab_mape_2024 <- summary_2024 |> transmute(Bucket = bucket, n, MAPE = round(MAPE, 2))
+mn_mape_ref <- tibble(
+  Bucket = c(
+    "Sub-7,500",
+    "(7,500-9,999)",
+    "(10,000-19,999)",
+    "(>=20,000)"
+  ),
+  MAPE_MN = c(NA, 12.16, 6.28, 5.81)
+)
 
-tab_mape_2022
-tab_mape_2024
-```
+tab_mape_2022 <- summary_2022 |>
+  transmute(Bucket = bucket, n, MAPE = round(MAPE, 2)) |>
+  left_join(mn_mape_ref, by = "Bucket")
 
-### Median Percent Error 
+tab_mape_2024 <- summary_2024 |>
+  transmute(Bucket = bucket, n, MAPE = round(MAPE, 2)) |>
+  left_join(mn_mape_ref, by = "Bucket")
 
-```{r, echo = F, message = F, warning = F}
-tab_mpe_2022 <- summary_2022 |> transmute(Bucket = bucket, n, Median_Percent_Error = round(Median_Percent_Error, 2))
-tab_mpe_2024 <- summary_2024 |> transmute(Bucket = bucket, n, Median_Percent_Error = round(Median_Percent_Error, 2))
+kable(
+  tab_mape_2022,
+  caption = "MAPE by AADT Bucket — 2022",
+  col.names = c("AADT Bucket", "n", "MAPE (%)", "MN MAPE (%)"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
-tab_mpe_2022
-tab_mpe_2024
-```
-
-### NRMSE
-
-```{r, echo = F, message = F, warning = F}
-tab_nrmse_2022 <- summary_2022 |> transmute(Bucket = bucket, n, NRMSE = round(NRMSE, 2))
-tab_nrmse_2024 <- summary_2024 |> transmute(Bucket = bucket, n, NRMSE = round(NRMSE, 2))
-
-tab_nrmse_2022
-tab_nrmse_2024
+kable(
+  tab_mape_2024,
+  caption = "MAPE by AADT Bucket — 2024",
+  col.names = c("AADT Bucket", "n", "MAPE (%)", "MN MAPE (%)"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 ```
 
 \newpage 
 
-## Alternative Bucketing 
+### Signed Percent Error 
 
 ```{r, echo = F, message = F, warning = F}
-library(dplyr)
-library(sf)
+mn_spe_ref <- tibble(
+  Bucket = c(
+    "Sub-7,500",
+    "(7,500-9,999)",
+    "(10,000-19,999)",
+    "(>=20,000)"
+  ),
+  SPE_MN = c(NA, -4.02, 0.26, -3.25)
+)
 
-# IMPORTANT: use ASCII hyphens, NOT en dashes (–)
-bucket_label <- function(aadt) {
-  case_when(
-    aadt < 500 ~ "<500",
-    aadt >= 500   & aadt <= 4999  ~ "Low (500-4,999)",
-    aadt >= 5000  & aadt < 20000  ~ "Medium (5,000-<20,000)",
-    aadt >= 20000 & aadt <= 54999 ~ "Medium-High (20,000-54,999)",
-    aadt >= 55000 ~ "High (>=55,000)",
-    TRUE ~ NA_character_
-  )
-}
+tab_spe_2022 <- summary_2022 |>
+  transmute(Bucket = bucket, n, Mean_PE = round(Mean_PE, 2)) |>
+  left_join(mn_spe_ref, by = "Bucket")
 
-summarise_one_year <- function(dat) {
-  dat |>
-    st_drop_geometry() |>
-    filter(!is.na(AADT_IADOT), !is.na(VOLUME_STL), AADT_IADOT > 0) |>
-    mutate(
-      bucket = bucket_label(AADT_IADOT),
-      ape = abs((VOLUME_STL - AADT_IADOT) / AADT_IADOT) * 100,
-      pe  = (VOLUME_STL - AADT_IADOT) / AADT_IADOT * 100,
-      se  = (VOLUME_STL - AADT_IADOT)^2
-    ) |>
-    filter(!is.na(bucket)) |>
-    group_by(bucket) |>
-    summarise(
-      n = n(),
-      MAPE = mean(ape, na.rm = TRUE),
-      Median_Percent_Error = median(pe, na.rm = TRUE),
-      NRMSE = sqrt(mean(se, na.rm = TRUE)) / mean(AADT_IADOT, na.rm = TRUE) * 100,
-      .groups = "drop"
-    ) |>
-    arrange(
-      factor(bucket, levels = c(
-        "<500",
-        "Low (500-4,999)",
-        "Medium (5,000-<20,000)",
-        "Medium-High (20,000-54,999)",
-        "High (>=55,000)"
-      ))
-    )
-}
+tab_spe_2024 <- summary_2024 |>
+  transmute(Bucket = bucket, n, Mean_PE = round(Mean_PE, 2)) |>
+  left_join(mn_spe_ref, by = "Bucket")
 
-summary_2022 <- summarise_one_year(conf2022)
-summary_2024 <- summarise_one_year(conf2024)
+kable(
+  tab_spe_2022,
+  caption = "Signed Percent Error by AADT Bucket — 2022",
+  col.names = c("AADT Bucket", "n", "Signed % Error", "MN Signed % Error"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+kable(
+  tab_spe_2024,
+  caption = "Signed Percent Error by AADT Bucket — 2024",
+  col.names = c("AADT Bucket", "n", "Signed % Error", "MN Signed % Error"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 ```
 
-### MAPE 
+### Absolute Percent Error Standard Deviation
 
 ```{r, echo = F, message = F, warning = F}
-tab_mape_2022 <- summary_2022 |> transmute(Bucket = bucket, n, MAPE = round(MAPE, 2))
-tab_mape_2024 <- summary_2024 |> transmute(Bucket = bucket, n, MAPE = round(MAPE, 2))
+### Absolute Percent Error Standard Deviation
+mn_ape_sd_ref <- tibble(
+  Bucket = c(
+    "Sub-7,500",
+    "(7,500-9,999)",
+    "(10,000-19,999)",
+    "(>=20,000)"
+  ),
+  APE_SD_MN = c(NA, 8.30, 4.98, 4.42)
+)
 
-tab_mape_2022
-tab_mape_2024
+tab_ape_sd_2022 <- summary_2022 |>
+  transmute(Bucket = bucket, n, APE_SD = round(APE_SD, 2)) |>
+  left_join(mn_ape_sd_ref, by = "Bucket")
+
+tab_ape_sd_2024 <- summary_2024 |>
+  transmute(Bucket = bucket, n, APE_SD = round(APE_SD, 2)) |>
+  left_join(mn_ape_sd_ref, by = "Bucket")
+
+kable(
+  tab_ape_sd_2022,
+  caption = "APE Standard Deviation by AADT Bucket — 2022",
+  col.names = c("AADT Bucket", "n", "APE SD (%)", "MN APE SD (%)"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+kable(
+  tab_ape_sd_2024,
+  caption = "APE Standard Deviation by AADT Bucket — 2024",
+  col.names = c("AADT Bucket", "n", "APE SD (%)", "MN APE SD (%)"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 ```
+
+\newpage 
+
+# Other 
 
 ### Median Percent Error 
 
 ```{r, echo = F, message = F, warning = F}
-tab_mpe_2022 <- summary_2022 |> transmute(Bucket = bucket, n, Median_Percent_Error = round(Median_Percent_Error, 2))
-tab_mpe_2024 <- summary_2024 |> transmute(Bucket = bucket, n, Median_Percent_Error = round(Median_Percent_Error, 2))
+tab_mpe_2022 <- summary_2022 |>
+  transmute(Bucket = bucket, n, Median_Percent_Error = round(Median_Percent_Error, 2))
 
-tab_mpe_2022
-tab_mpe_2024
+tab_mpe_2024 <- summary_2024 |>
+  transmute(Bucket = bucket, n, Median_Percent_Error = round(Median_Percent_Error, 2))
+
+kable(
+  tab_mpe_2022,
+  caption = "Median Percent Error by AADT Bucket — 2022",
+  col.names = c("AADT Bucket", "n", "Median % Error"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+kable(
+  tab_mpe_2024,
+  caption = "Median Percent Error by AADT Bucket — 2024",
+  col.names = c("AADT Bucket", "n", "Median % Error"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 ```
 
 ### NRMSE
@@ -276,6 +296,151 @@ tab_mpe_2024
 tab_nrmse_2022 <- summary_2022 |> transmute(Bucket = bucket, n, NRMSE = round(NRMSE, 2))
 tab_nrmse_2024 <- summary_2024 |> transmute(Bucket = bucket, n, NRMSE = round(NRMSE, 2))
 
-tab_nrmse_2022
-tab_nrmse_2024
+kable(
+  tab_nrmse_2022,
+  caption = "NRMSE by AADT Bucket — 2022",
+  col.names = c("AADT Bucket", "n", "NRMSE (%)"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+kable(
+  tab_nrmse_2024,
+  caption = "NRMSE by AADT Bucket — 2024",
+  col.names = c("AADT Bucket", "n", "NRMSE (%)"),
+  format.args = list(big.mark = ",")
+) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 ```
+
+<!-- \newpage  -->
+
+<!-- ## Recommended Metric(s) -->
+
+<!-- $$ -->
+<!-- \text{MAPE} -->
+<!-- = -->
+<!-- \frac{1}{n} -->
+<!-- \sum_{i=1}^{n} -->
+<!-- \left| -->
+<!-- \frac{\hat{AADT}_i - AADT_i}{AADT_i} -->
+<!-- \right| -->
+<!-- \times 100 -->
+<!-- $$ -->
+
+<!-- **Source:**\ -->
+<!-- *StreetLight AADT 2024 – Initial Release: Methodology and Validation White Paper*, page 5 -->
+
+<!-- ### Median Percentage Error (Bias) -->
+
+<!-- $$ -->
+<!-- \text{Median Percentage Error} -->
+<!-- = -->
+<!-- \text{median} -->
+<!-- \left( -->
+<!-- \frac{\hat{AADT}_i - AADT_i}{AADT_i} -->
+<!-- \right) -->
+<!-- \times 100 -->
+<!-- $$ -->
+
+<!-- **Source:**\ -->
+<!-- *StreetLight AADT 2024 – Initial Release: Methodology and Validation White Paper*, page 5 -->
+
+<!-- ### Normalized Root Mean Square Error (NRMSE) -->
+
+<!-- $$ -->
+<!-- \text{NRMSE} -->
+<!-- = -->
+<!-- \frac{ -->
+<!-- \sqrt{\frac{1}{n}\sum_{i=1}^{n}(\hat{AADT}_i - AADT_i)^2} -->
+<!-- }{ -->
+<!-- AADT -->
+<!-- } -->
+<!-- \times 100 -->
+<!-- $$ -->
+
+<!-- **Source:**\ -->
+<!-- *StreetLight AADT 2024 – Initial Release: Methodology and Validation White Paper*, page 5 -->
+
+<!-- \newpage -->
+
+<!-- ## Alternative Bucketing  -->
+
+<!-- ```{r, echo = F, message = F, warning = F} -->
+<!-- library(dplyr) -->
+<!-- library(sf) -->
+
+<!-- # IMPORTANT: use ASCII hyphens, NOT en dashes (–) -->
+<!-- bucket_label <- function(aadt) { -->
+<!--   case_when( -->
+<!--     aadt < 500 ~ "<500", -->
+<!--     aadt >= 500   & aadt <= 4999  ~ "Low (500-4,999)", -->
+<!--     aadt >= 5000  & aadt < 20000  ~ "Medium (5,000-<20,000)", -->
+<!--     aadt >= 20000 & aadt <= 54999 ~ "Medium-High (20,000-54,999)", -->
+<!--     aadt >= 55000 ~ "High (>=55,000)", -->
+<!--     TRUE ~ NA_character_ -->
+<!--   ) -->
+<!-- } -->
+
+<!-- summarise_one_year <- function(dat) { -->
+<!--   dat |> -->
+<!--     st_drop_geometry() |> -->
+<!--     filter(!is.na(AADT_IADOT), !is.na(VOLUME_STL), AADT_IADOT > 0) |> -->
+<!--     mutate( -->
+<!--       bucket = bucket_label(AADT_IADOT), -->
+<!--       ape = abs((VOLUME_STL - AADT_IADOT) / AADT_IADOT) * 100, -->
+<!--       pe  = (VOLUME_STL - AADT_IADOT) / AADT_IADOT * 100, -->
+<!--       se  = (VOLUME_STL - AADT_IADOT)^2 -->
+<!--     ) |> -->
+<!--     filter(!is.na(bucket)) |> -->
+<!--     group_by(bucket) |> -->
+<!--     summarise( -->
+<!--       n = n(), -->
+<!--       MAPE = mean(ape, na.rm = TRUE), -->
+<!--       Median_Percent_Error = median(pe, na.rm = TRUE), -->
+<!--       NRMSE = sqrt(mean(se, na.rm = TRUE)) / mean(AADT_IADOT, na.rm = TRUE) * 100, -->
+<!--       .groups = "drop" -->
+<!--     ) |> -->
+<!--     arrange( -->
+<!--       factor(bucket, levels = c( -->
+<!--         "Sub-7,500", -->
+<!--         "(7,500-9,999)", -->
+<!--         "(10,000-19,999)", -->
+<!--         "(>=20,000)" -->
+<!--       )) -->
+<!--     ) -->
+<!-- } -->
+
+<!-- summary_2022 <- summarise_one_year(conf2022) -->
+<!-- summary_2024 <- summarise_one_year(conf2024) -->
+<!-- ``` -->
+
+<!-- ### MAPE  -->
+
+<!-- ```{r, echo = F, message = F, warning = F} -->
+<!-- tab_mape_2022 <- summary_2022 |> transmute(Bucket = bucket, n, MAPE = round(MAPE, 2)) -->
+<!-- tab_mape_2024 <- summary_2024 |> transmute(Bucket = bucket, n, MAPE = round(MAPE, 2)) -->
+
+<!-- tab_mape_2022 -->
+<!-- tab_mape_2024 -->
+<!-- ``` -->
+
+<!-- ### Median Percent Error  -->
+
+<!-- ```{r, echo = F, message = F, warning = F} -->
+<!-- tab_mpe_2022 <- summary_2022 |> transmute(Bucket = bucket, n, Median_Percent_Error = round(Median_Percent_Error, 2)) -->
+<!-- tab_mpe_2024 <- summary_2024 |> transmute(Bucket = bucket, n, Median_Percent_Error = round(Median_Percent_Error, 2)) -->
+
+<!-- tab_mpe_2022 -->
+<!-- tab_mpe_2024 -->
+<!-- ``` -->
+
+<!-- ### NRMSE -->
+
+<!-- ```{r, echo = F, message = F, warning = F} -->
+<!-- tab_nrmse_2022 <- summary_2022 |> transmute(Bucket = bucket, n, NRMSE = round(NRMSE, 2)) -->
+<!-- tab_nrmse_2024 <- summary_2024 |> transmute(Bucket = bucket, n, NRMSE = round(NRMSE, 2)) -->
+
+<!-- tab_nrmse_2022 -->
+<!-- tab_nrmse_2024 -->
+<!-- ``` -->
