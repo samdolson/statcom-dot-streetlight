@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.1)  4 MAR 2026 17:36
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.1)  16 MAR 2026 12:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -282,7 +282,9 @@ Package graphics Info: Driver file: pdftex.def on input line 106.
 \Gin@req@width=\dimen187
 )
 \pandoc@box=\box64
-(c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/multirow/multirow.sty
+(c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/placeins/placeins.sty
+Package: placeins 2005/04/18  v 2.2
+) (c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/multirow/multirow.sty
 Package: multirow 2024/11/12 v2.9 Span multiple rows of a table
 \multirow@colwidth=\skip64
 \multirow@cntb=\count313
@@ -478,16 +480,13 @@ File: bkm-pdftex.def 2023-12-10 v1.31 bookmark driver for pdfTeX and luaTeX (HO)
 )) (c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/xurl/xurl.sty
 Package: xurl 2022/01/09 v 0.10 modify URL breaks
 )
-LaTeX Font Info:    Trying to load font information for T1+lmr on input line 94.
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 103.
 (c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) (c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count338
 ) (./Report.aux
-
-LaTeX Warning: Label `tab:unnamed-chunk-3' multiply defined.
-
 
 LaTeX Warning: Label `tab:unnamed-chunk-4' multiply defined.
 
@@ -512,27 +511,30 @@ LaTeX Warning: Label `tab:unnamed-chunk-10' multiply defined.
 
 LaTeX Warning: Label `tab:unnamed-chunk-13' multiply defined.
 
+
+LaTeX Warning: Label `tab:good-tables' multiply defined.
+
 )
 \openout1 = `Report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 94.
-LaTeX Font Info:    ... okay on input line 94.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 94.
-LaTeX Font Info:    ... okay on input line 94.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 94.
-LaTeX Font Info:    ... okay on input line 94.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 94.
-LaTeX Font Info:    ... okay on input line 94.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 94.
-LaTeX Font Info:    ... okay on input line 94.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 94.
-LaTeX Font Info:    ... okay on input line 94.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 94.
-LaTeX Font Info:    ... okay on input line 94.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 94.
-LaTeX Font Info:    ... okay on input line 94.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 94.
-LaTeX Font Info:    ... okay on input line 94.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 103.
+LaTeX Font Info:    ... okay on input line 103.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 103.
+LaTeX Font Info:    ... okay on input line 103.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 103.
+LaTeX Font Info:    ... okay on input line 103.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 103.
+LaTeX Font Info:    ... okay on input line 103.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 103.
+LaTeX Font Info:    ... okay on input line 103.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 103.
+LaTeX Font Info:    ... okay on input line 103.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 103.
+LaTeX Font Info:    ... okay on input line 103.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 103.
+LaTeX Font Info:    ... okay on input line 103.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 103.
+LaTeX Font Info:    ... okay on input line 103.
 (c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
@@ -576,15 +578,15 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 Package microtype Info: Patching varwidth to enable character protrusion.
 \MT@vwid@leftmargin=\dimen266
 \MT@vwid@rightmargin=\dimen267
-LaTeX Info: Redefining \microtypecontext on input line 94.
-Package microtype Info: Applying patch `item' on input line 94.
-Package microtype Info: Applying patch `toc' on input line 94.
-Package microtype Info: Applying patch `eqnum' on input line 94.
+LaTeX Info: Redefining \microtypecontext on input line 103.
+Package microtype Info: Applying patch `item' on input line 103.
+Package microtype Info: Applying patch `toc' on input line 103.
+Package microtype Info: Applying patch `eqnum' on input line 103.
 
-Package microtype Warning: Unable to apply patch `footnote' on input line 94.
+Package microtype Warning: Unable to apply patch `footnote' on input line 103.
 
-Package microtype Info: Applying patch `verbatim' on input line 94.
-LaTeX Info: Redefining \microtypesetup on input line 94.
+Package microtype Info: Applying patch `verbatim' on input line 103.
+LaTeX Info: Redefining \microtypesetup on input line 103.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using protrusion set `basicmath'.
@@ -598,90 +600,85 @@ Package microtype Info: No adjustment of character kerning.
 (c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/microtype/mt-cmr.cfg
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman (RS)
 )
-Package hyperref Info: Link coloring OFF on input line 94.
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 96.
+Package hyperref Info: Link coloring OFF on input line 103.
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 105.
 (c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 96.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 105.
 (c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 96.
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 105.
 (c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 96.
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 105.
 (c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 96.
+(Font)              <12> on input line 105.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 96.
+(Font)              <8> on input line 105.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 96.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 96.
+(Font)              <6> on input line 105.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 105.
 (c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 96.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 105.
 (c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
-)
+) (./Report.toc
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 172.
+(Font)              <10> on input line 2.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 172.
+(Font)              <7> on input line 2.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 172.
+(Font)              <5> on input line 2.
 [1
 
-{c:/Users/samue/AppData/Roaming/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}]
-<Report_files/figure-latex/unnamed-chunk-2-1.pdf, id=15, 469.755pt x 325.215pt>
+{c:/Users/samue/AppData/Roaming/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}])
+\tf@toc=\write3
+\openout3 = `Report.toc'.
+
+[2] [3] [4{c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}] [5]
+<Report_files/figure-latex/unnamed-chunk-2-1.pdf, id=104, 469.755pt x 252.945pt>
 File: Report_files/figure-latex/unnamed-chunk-2-1.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/unnamed-chunk-2-1.pdf>
-Package pdftex.def Info: Report_files/figure-latex/unnamed-chunk-2-1.pdf  used on input line 233.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<Report_files/figure-latex/unnamed-chunk-2-2.pdf, id=16, 469.755pt x 325.215pt>
-File: Report_files/figure-latex/unnamed-chunk-2-2.pdf Graphic file (type pdf)
-<use Report_files/figure-latex/unnamed-chunk-2-2.pdf>
-Package pdftex.def Info: Report_files/figure-latex/unnamed-chunk-2-2.pdf  used on input line 234.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+Package pdftex.def Info: Report_files/figure-latex/unnamed-chunk-2-1.pdf  used on input line 309.
+(pdftex.def)             Requested size: 422.77664pt x 227.64839pt.
+<Report_files/figure-latex/unnamed-chunk-3-1.pdf, id=105, 469.755pt x 252.945pt>
+File: Report_files/figure-latex/unnamed-chunk-3-1.pdf Graphic file (type pdf)
+<use Report_files/figure-latex/unnamed-chunk-3-1.pdf>
+Package pdftex.def Info: Report_files/figure-latex/unnamed-chunk-3-1.pdf  used on input line 311.
+(pdftex.def)             Requested size: 422.77664pt x 227.64839pt.
+[6
 
-Underfull \hbox (badness 10000) in paragraph at lines 233--235
-[]
- []
-
-[2{c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}]
-Overfull \vbox (25.78995pt too high) has occurred while \output is active []
-
-[3 <./Report_files/figure-latex/unnamed-chunk-2-1.pdf> <./Report_files/figure-latex/unnamed-chunk-2-2.pdf>] [4]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 299.
+ <./Report_files/figure-latex/unnamed-chunk-2-1.pdf> <./Report_files/figure-latex/unnamed-chunk-3-1.pdf>] [7]
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 378.
 (c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) [5{c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}] [6] [7] [8{c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}] [9] [10]
-<Report_files/figure-latex/unnamed-chunk-12-1.pdf, id=127, 469.755pt x 325.215pt>
+) [8{c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}] [9] [10] [11{c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}] [12] [13]
+<Report_files/figure-latex/unnamed-chunk-12-1.pdf, id=183, 469.755pt x 252.945pt>
 File: Report_files/figure-latex/unnamed-chunk-12-1.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/unnamed-chunk-12-1.pdf>
-Package pdftex.def Info: Report_files/figure-latex/unnamed-chunk-12-1.pdf  used on input line 693.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[11 <./Report_files/figure-latex/unnamed-chunk-12-1.pdf>]
-<Report_files/figure-latex/unnamed-chunk-15-1.pdf, id=147, 469.755pt x 325.215pt>
+Package pdftex.def Info: Report_files/figure-latex/unnamed-chunk-12-1.pdf  used on input line 786.
+(pdftex.def)             Requested size: 422.77664pt x 227.64839pt.
+[14
+
+ <./Report_files/figure-latex/unnamed-chunk-12-1.pdf>]
+<Report_files/figure-latex/unnamed-chunk-15-1.pdf, id=201, 469.755pt x 252.945pt>
 File: Report_files/figure-latex/unnamed-chunk-15-1.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/unnamed-chunk-15-1.pdf>
-Package pdftex.def Info: Report_files/figure-latex/unnamed-chunk-15-1.pdf  used on input line 739.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-
-Overfull \hbox (28.38298pt too wide) in alignment at lines 741--752
- [] [] [] [] [] [] [] 
- []
-
-ignored error: Infinite glue shrinkage found in box being split [12 <./Report_files/figure-latex/unnamed-chunk-15-1.pdf>] [13] (./Report.aux)
+Package pdftex.def Info: Report_files/figure-latex/unnamed-chunk-15-1.pdf  used on input line 834.
+(pdftex.def)             Requested size: 422.77664pt x 227.64839pt.
+[15 <./Report_files/figure-latex/unnamed-chunk-15-1.pdf>] [16] (./Report.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -691,18 +688,18 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 15170 strings out of 469514
- 241430 string characters out of 5467648
- 705205 words of memory out of 5000000
- 43352 multiletter control sequences out of 15000+600000
- 690869 words of font info for 156 fonts, out of 8000000 for 9000
+ 15240 strings out of 469514
+ 243169 string characters out of 5467648
+ 706382 words of memory out of 5000000
+ 43396 multiletter control sequences out of 15000+600000
+ 691259 words of font info for 161 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 89i,7n,93p,1003b,600s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmex10.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb>
-Output written on Report.pdf (13 pages, 21695802 bytes).
+ 89i,7n,93p,1003b,557s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmex10.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb>
+Output written on Report.pdf (16 pages, 21729750 bytes).
 PDF statistics:
- 334 PDF objects out of 1000 (max. 8388607)
- 278 compressed objects within 3 object streams
- 65 named destinations out of 1000 (max. 500000)
- 35085 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 400 PDF objects out of 1000 (max. 8388607)
+ 338 compressed objects within 4 object streams
+ 74 named destinations out of 1000 (max. 500000)
+ 35101 words of extra memory for PDF output out of 35830 (max. 10000000)
 
