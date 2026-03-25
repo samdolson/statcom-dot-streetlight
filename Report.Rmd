@@ -1,5 +1,5 @@
 ---
-title: "Evaluation of StreetLight AADT Estimates for Iowa Interstate Segments"
+title: "Evaluation of StreetLight AADT Estimates of Iowa Interstates"
 subtitle: "Accuracy and Independence Assessment"
 output:
   pdf_document:
@@ -10,7 +10,27 @@ output:
     df_print: paged
 header-includes:
   - \usepackage{placeins}
+  - \usepackage{caption}
 ---
+
+# Executive Summary
+
+This report evaluates StreetLight Data's AADT estimates for Iowa interstate segments on two dimensions: methodological independence from Iowa DOT counts, and accuracy relative to FHWA and Minnesota DOT benchmarks. The findings are intended to inform how Iowa DOT weighs the trade-offs between reduced tube-count deployment and the accuracy limitations StreetLight exhibits at lower volumes.
+
+**On independence:** Available documentation supports StreetLight estimates being primarily probe-driven, with Iowa DOT counts used for calibration and validation rather than direct segment-level estimation. This cannot be confirmed without explicit vendor disclosure, and the more consequential concern may be operational: reducing physical tube counts would eliminate the independent baseline needed to detect future degradation in StreetLight accuracy over time.
+
+**On accuracy:** Performance varies substantially by volume range.
+
+| AADT Range | MAPE (2022 / 2024) | Relative to FHWA Guidance |
+|---|---|---|
+| $\geq$ 20,000 | 8.6% / 6.8% | Within bounds |
+| 10,000–19,999 | 11.0% / 9.6% | At or near upper limit |
+| 7,500–9,999 | 13.0% / 15.3% | Exceeds bounds |
+| < 7,500 | 47.5% / 38.7% | Far exceeds bounds |
+
+StreetLight estimates are consistently higher than Iowa DOT counts across all volume ranges — a directional tendency that is modest at higher volumes but pronounced at lower ones.
+
+**Segment-level diagnostics** identify 7 persistently problematic segments (APE > 100% in both years) and a pool of 10 segments with exceptionally close agreement (APE $\leq$ 1% both years). The latter represents a natural starting point for an ongoing monitoring strategy that would preserve validation capability at reduced cost. Full details are provided in Section 5.
 
 \newpage
 
@@ -49,13 +69,17 @@ good_threshold <- 5
 
 This report evaluates the performance of StreetLight Data's Average Annual Daily Traffic (AADT) estimates for Iowa interstate segments by comparing them to observed Iowa DOT counts. Two primary questions are examined:
 
-1. **Accuracy:** How closely do StreetLight AADT estimates match Iowa DOT counts across different traffic volume ranges?
+1. **Methodological Independence:** To what extent are StreetLight estimates produced independently of Iowa DOT counts versus calibrated against them?
 
-2. **Methodological Independence:** To what extent are StreetLight estimates produced independently of Iowa DOT counts versus calibrated against them?
+2. **Accuracy:** How closely do StreetLight AADT estimates match Iowa DOT counts across different traffic volume ranges?
 
 The overall goal is not only to assess current agreement, but also to understand what kind of strategy would allow Iowa DOT to maintain confidence in Streetlight AADT estimates over time.
 
-## Question 1: Accuracy of Streetlight Estimates
+## Question 1: Independence of StreetLight Estimates
+
+Available evidence supports StreetLight estimates being primarily probe-driven, with Iowa DOT counts used for calibration and validation rather than direct segment-level estimation. Whether observed agreement fully reflects methodological independence — or is partly an artifact of Iowa DOT data having been used during model training — cannot be determined without vendor disclosure. The practical implications of this uncertainty, and the case for retaining a targeted set of physical counts regardless of how the independence question is ultimately resolved, are developed in Section 3.
+
+## Question 2: Accuracy of Streetlight Estimates
 
 StreetLight AADT estimates perform reliably on higher-volume Iowa interstate segments and are broadly consistent with independent validation benchmarks from Minnesota DOT. Specifically for road segments carrying 10,000 or more vehicles per day (the primary traffic volume group of interest), average errors range from roughly 7% to 11%, which falls within acceptable bounds under both MN DOT and FHWA guidance. Accuracy degrades at lower volume ranges, and segments below 7,500 AADT exhibit error levels too high to support direct substitution for official counts.
 
@@ -63,19 +87,65 @@ Across all volume buckets, StreetLight estimates tend to run slightly higher tha
 
 Overall, the results support using StreetLight AADT estimates as a credible, independently generated source for higher-volume Iowa interstate segments, with the recommendation that low-volume segments be treated with appropriate caution. These results point to an important practical question: how should DOT balance the cost savings of reduced counter deployment against the accuracy limitations StreetLight exhibits at lower volumes? The findings here suggest a natural strategy — leveraging StreetLight for high-volume segments while maintaining physical counters where estimates are less reliable.
 
-Note: MN DOT applies a data quality filter before computing its published accuracy metrics — a step not applied here — so some portion of the gap between Iowa and Minnesota results is methodological rather than reflective of true differences in estimate quality.
+Note: MN DOT applies a data quality filter before computing its published accuracy metrics --- a step not applied here --- so some portion of the gap between Iowa and Minnesota results is methodological rather than reflective of true differences in estimate quality. This distinction is elaborated in Section 4.2.
 
-## Question 2: Independence of StreetLight Estimates
+# Question 1: Independence 
 
-We find that in principle StreetLight volume estimates and Iowa DOT counts should align closely because both systems measure the same underlying traffic volumes. High agreement is therefore expected but does not, by itself, imply that the two data sources are methodologically dependent.
+## Conceptual Framing
 
-The relevant concern is not agreement, but whether Iowa DOT counts are used to directly produce StreetLight estimates (henceforth referred to as "methodological independence"). Based on available StreetLight documentation, FHWA guidance, and independent state-level evaluations (including Minnesota DOT), current evidence supports StreetLight estimates being primarily probe-driven, with DOT counts used for calibration and validation, rather than for direct substitution or enforcement of agreement at specific locations.
+StreetLight estimates and DOT counts measure the same underlying quantity: true average annual traffic volume. Agreement between the two is therefore expected and, by itself, does not establish methodological dependence.
 
-To emphasize the distinction: calibration can improve model performance without compromising methodological independence, provided evaluation is conducted on held-out data. As a matter of due diligence, however, explicit vendor clarification would strengthen confidence in this conclusion. Specifically, this means confirming that Iowa DOT count data are not used as direct inputs to model training or segment-level estimation — but are limited to calibration and validation — and that the StreetLight methodology does not incorporate Iowa DOT data in a way that would directly constrain estimated volumes.
+The relevant question is whether DOT counts are used **directly** to produce segment-level estimates, or whether they are used only for calibration and validation of probe-based models.
 
-A remaining open question is the extent to which observed agreement between StreetLight and Iowa DOT estimates reflects genuine methodological independence versus calibration to official counts — a distinction that cannot be resolved without greater vendor transparency. This uncertainty reinforces the case for the approach noted previously: leveraging StreetLight for *a limited number* of high-volume segments while retaining physical counters where estimates are less reliable.
+## Summary Assessment
 
-# Question 1: Differences in Estimates 
+Current evidence supports StreetLight estimates being primarily probe-driven rather than directly derived from Iowa DOT counts. The concern that Iowa DOT is effectively "paying to receive its own data back" appears overstated based on available documentation. The more substantive and underappreciated risk is different: *Reducing or eliminating Iowa DOT tube counts would degrade both parties' ability to assess whether StreetLight estimates are accurate for Iowa segments*.
+
+This matters for three reasons:
+
+- **DOT loses independent validation.** Without ground-truth counts on a representative set of segments, there is no external check on StreetLight accuracy. Observed agreement in this report is itself conditional on having DOT counts to compare against.
+- **StreetLight loses Iowa-specific calibration signal.** DOT counts are used for model calibration and plausibility screening. Removing them degrades the model's ability to self-correct for Iowa-specific conditions.
+- **The source of accuracy becomes unverifiable.** For any given segment, it is currently impossible to determine whether a close StreetLight estimate reflects genuine probe-data quality or is partly an  artifact of Iowa DOT counts having been used during calibration. Without ongoing counts, this ambiguity is permanent and estimates must be taken on faith.
+
+The question of methodological independence is therefore secondary to the practical question of *what monitoring practice preserves the ability to detect and respond to degraded accuracy over time*.
+
+To summarize the state of evidence:
+
+- **What can be concluded:** Available documentation supports StreetLight estimates being primarily probe-driven, with DOT counts used for calibration and validation rather than direct segment-level estimation.
+- **What cannot be concluded:** Whether observed agreement reflects genuine methodological independence or is partly an artifact of Iowa DOT data having been used during model training — a distinction that requires vendor disclosure to resolve.
+- **Operational implication:** Regardless of how the independence question is ultimately answered, retaining a targeted set of tube counts on well-chosen segments preserves the ability to detect and respond to degraded accuracy over time.
+
+### Implications
+
+- Strong observed agreement between DOT counts and StreetLight estimates is expected and is not diagnostic of dependence — both measure the same underlying quantity
+- Statistical tests cannot resolve whether agreement reflects probe quality or calibration influence
+- Definitive confirmation would require vendor disclosure that Iowa DOT data are not used as direct inputs to segment-level estimation, and/or Iowa-specific holdout validation
+- One possible path forward is a **targeted retention strategy** for tube counts on a small set of well-chosen segments (see *Recommended Monitoring Segments* below)
+
+## Details
+
+The following provides further detail on the basis for this assessment: why agreement is expected, how independence should be evaluated, what evidence is currently available, and what uncertainties remain.
+
+### Why Agreement Is Expected
+
+When comparing StreetLight estimates to Iowa DOT observed counts, high correlation is inevitable because both aim to measure the same latent quantity: true average annual traffic volume.
+
+- High correlation is therefore necessary but not diagnostic.
+- The relevant question is not *whether* the estimates agree, but *why* they agree.
+
+### What Methodological Independence Means in Practice
+
+Methodological independence depends on *how counts enter the modeling pipeline*, not whether they appear anywhere in it. 
+
+The practical question is:
+
+> To what extent are Iowa DOT counts used to *produce* StreetLight Iowa estimates, rather than simply evaluate them?
+
+Current evidence indicates that Iowa DOT counts are used for calibration and validation rather than direct estimation, though documentation does not fully rule out the use of Iowa-specific count data during model training.
+
+\newpage
+
+# Question 2: Differences in Estimates 
 
 ## Recommended Bucketing
 
@@ -88,67 +158,21 @@ MN DOT buckets are used here to allow for direct comparison against an independe
 | Medium-volume evaluation | 10,000 – 19,999 |
 | High-volume evaluation | $\geq$ 20,000 |
 
-The 2022 and 2024 conflated datasets are treated as **independent replicates** of the same validation analysis. Each year compares StreetLight estimates to Iowa DOT counts on the same interstate segment definitions, allowing consistency of results across years to be evaluated. The road segments in those files correspond directly to Iowa interstates of interest; the original Iowa DOT data, while more numerous, included segments outside the scope of this work.
+The 2022 and 2024 conflated datasets are treated as **separate validation exercises** against the same underlying segment definitions — providing two measurement cycles against which consistency of results can be evaluated, while noting that the repeated use of the same segments across years is partly what motivates the misclassification analysis in Section 4.3.2. The road segments in those files correspond directly to Iowa interstates of interest; the original Iowa DOT data, while more numerous, included segments outside the scope of this work. Throughout this report, Iowa DOT counts serve as the reference standard for evaluation purposes — a conventional and appropriate choice, while recognizing that physical tube counts are themselves subject to measurement error.
 
 ## Accuracy Assessment 
 
-Comparing StreetLight AADT estimates against Iowa DOT counts, accuracy is broadly consistent with MN DOT's 2024 validation in terms of error magnitude, though Iowa estimates are systematically higher across all buckets. This is unsurprising, as MN DOT applies a percent-change tolerance screen prior to computing accuracy metrics — locations where estimated AADT deviates from the prior official count by more than 15% (for volumes between 5,000 and 49,999) or more than 10% (for volumes $\geq$ 50,000) are excluded from evaluation or flagged for recount. No such filter is applied here, which is expected to yield higher error values. Past work has historically focused on the Mean Absolute Percent Error (MAPE) metric for comparing the accuracy of estimates. This measure is used throughout in addition to a handful of other established measures of accuracy.
+Comparing StreetLight AADT estimates against Iowa DOT counts, accuracy is broadly consistent with MN DOT's 2024 validation in terms of error magnitude, though Iowa estimates are systematically higher across all buckets. As noted in Section 2.2, MN DOT applies a percent-change tolerance screen not used here — specifically, excluding locations where estimated AADT deviates more than 15% (volumes 5,000–49,999) or more than 10% (volumes $\geq$ 50,000) — which accounts for some portion of this gap. Past work has historically focused on the Mean Absolute Percent Error (MAPE) metric for comparing the accuracy of estimates. This measure is used throughout in addition to a handful of other established measures of accuracy.
 
-For the $\geq$ 20,000 AADT bucket, MAPE ranges from 6.8% (2024) to 8.6% (2022), modestly above MN DOT's reported 5.81% but well within the FHWA Table 14 upper bound of approximately 10.5% for medium-volume roads (5,000--54,999) at the observed sample sizes. Signed percent error is positive at approximately 4.3% to 4.6%, in contrast to MN DOT's slight negative bias of $-3.25\%$, indicating a mild tendency toward overestimation in the Iowa data; median TCE likewise falls within the FHWA $\pm 2.0\%$ bias limit at large $n$. NRMSE is 9.0% to 10.7%, and APE SD is 6.9% to 9.1%. Taken together, these error levels are low in absolute terms, consistent with reliable probe-based estimation on higher-volume roadways, and meet FHWA accuracy standards.
+For the $\geq$ 20,000 AADT bucket, MAPE ranges from 6.8% (2024) to 8.6% (2022), modestly above MN DOT's reported 5.81% but well within the FHWA Table 14 upper bound of approximately 10.5% for medium-volume roads (5,000--54,999) at the observed sample sizes. Signed percent error is positive at approximately 4.3% to 4.6%, in contrast to MN DOT's slight negative bias of $-3.25\%$, indicating a mild tendency toward overestimation in the Iowa data; median TCE likewise falls within the FHWA $\pm 2.0\%$ bias limit at large $n$. NRMSE is 9.0% to 10.7%, and APE SD is 6.9% to 9.1%. Taken together, these error levels are low in absolute terms, consistent with reliable probe-based estimation on higher-volume roadways, and meet FHWA accuracy standards. *Among the volume buckets examined, this group provides the strongest basis for using StreetLight estimates in place of physical counts.*
 
-In the 10,000 to 19,999 bucket, MAPE is 9.6% to 11.0%, compared to MN DOT's 6.28%. This range approaches but does not exceed the FHWA Table 14 upper bound of approximately 10.5--11.9% for medium-volume roads at the observed sample sizes, placing these results at the margins of acceptable accuracy under FHWA guidance. Signed errors are positive (4.6% to 5.8%) versus MN DOT's near-zero 0.26%, again reflecting a tendency for overestimation, though median TCE remains within or near the FHWA $\pm 2$--$4\%$ bias limits depending on sample size. APE SD (11.9% to 13.8%) is approximately double MN DOT's 4.98%, suggesting higher variability across segments even where average accuracy is marginal.
+In the 10,000 to 19,999 bucket, MAPE is 9.6% to 11.0%, compared to MN DOT's 6.28%. This range approaches but does not exceed the FHWA Table 14 upper bound of approximately 10.5--11.9% for medium-volume roads at the observed sample sizes — placing these results at the upper limit of what FHWA guidance would consider acceptable, with little margin remaining. Signed errors are positive (4.6% to 5.8%) versus MN DOT's near-zero 0.26%, again reflecting a tendency for overestimation, though median TCE remains within or near the FHWA $\pm 2$--$4\%$ bias limits depending on sample size. APE SD (11.9% to 13.8%) is approximately double MN DOT's 4.98%, suggesting higher variability across segments even where average accuracy is marginal. *StreetLight estimates in this range may be suitable for planning purposes where moderate error is tolerable, but should not be treated as direct substitutes for official counts without additional validation.*
 
-In the 7,500 to 9,999 bucket, MAPE is 13.0% to 15.3%, somewhat above MN DOT's 12.16% and exceeding the FHWA Table 14 upper bound of approximately 10.5--12.7% for medium-volume roads at the observed sample sizes. Signed errors are positive at 7.3% to 10.2%, a notable directional contrast to MN DOT's $-4.02\%$ and substantially above the FHWA $\pm 2$--$5\%$ bias limits. APE SD is elevated at 18.5% to 22.0% versus MN DOT's 8.30%, indicating considerable segment-to-segment variability. Together these figures suggest this bucket does not meet FHWA accuracy standards as stated.
+In the 7,500 to 9,999 bucket, MAPE is 13.0% to 15.3%, somewhat above MN DOT's 12.16% and exceeding the FHWA Table 14 upper bound of approximately 10.5--12.7% for medium-volume roads at the observed sample sizes. Signed errors are positive at 7.3% to 10.2%, a notable directional contrast to MN DOT's $-4.02\%$ and substantially above the FHWA $\pm 2$--$5\%$ bias limits. APE SD is elevated at 18.5% to 22.0% versus MN DOT's 8.30%, indicating considerable segment-to-segment variability. Together these figures suggest this bucket does not meet FHWA accuracy standards as stated. *Estimates in this range should be used with caution and interpreted alongside, rather than in place of, available count data.*
 
-For the Sub-7,500 bucket — not reported in the MN DOT study — errors are substantially higher and merit particular caution. MAPE ranges from 38.7% (2024) to 47.5% (2022), and NRMSE from 49.1% to 66.3%. These figures far exceed the FHWA Table 14 upper bound of approximately 13--18% for low-volume roads (500--4,999) at the observed sample sizes, and the observed bias similarly exceeds the FHWA $\pm 1.6$--$8.7\%$ TCE median limits. Notably, the 2022 APE SD of 150.3% indicates extreme variability across segments in that year, well above the more moderate 46.6% observed in 2024. Regardless, error levels in this bucket fail FHWA accuracy standards by a wide margin, and StreetLight estimates below 7,500 AADT should not be substituted for official counts without substantial additional scrutiny.
+For the Sub-7,500 bucket — not reported in the MN DOT study — errors are substantially higher and merit particular caution. MAPE ranges from 38.7% (2024) to 47.5% (2022), and NRMSE from 49.1% to 66.3%. These figures far exceed the FHWA Table 14 upper bound of approximately 13--18% for low-volume roads (500--4,999) at the observed sample sizes, and the observed bias similarly exceeds the FHWA $\pm 1.6$--$8.7\%$ TCE median limits. Notably, the 2022 APE SD of 150.3% indicates extreme variability across segments in that year, well above the more moderate 46.6% observed in 2024. The magnitude of this difference likely reflects one or more high-leverage outlier segments in the 2022 sub-7,500 pool rather than a general year-over-year shift in model behavior; the flagged segments in Section 5.2 are a natural starting point for investigation. Regardless, error levels in this bucket fail FHWA accuracy standards by a wide margin, and StreetLight estimates below 7,500 AADT should not be substituted for official counts without substantial additional scrutiny. *This bucket falls outside the range where StreetLight estimates can be considered reliable for any planning or reporting purpose without independent verification.*
 
-Note: MN DOT's published accuracy metrics represent performance *conditional on passing an operational plausibility screen*, whereas the present analysis evaluates all sites without such filtering. More details on MN DOT's procedure are described in the *2024 Mobile Source Data for AADT Implementation Analysis* (Methodology section).
-
-\clearpage
-
-## Coverage 
-
-```{r, echo = F, message = F, warning = F, cache = T, results = 'hide', fig.pos = "H", fig.height = 3.5, out.width = "90%"}
-conf2022_ll <- st_transform(conf2022, 4326)
-conf2024_ll <- st_transform(conf2024, 4326)
-
-# leaflet(conf2022_ll) |>
-#   addTiles() |>
-#   addPolylines(color = "#1F78B4", weight = 3, opacity = 0.9) |>
-#   addLegend(position = "bottomright", colors = "#1F78B4",
-#             labels = "Conflated Segments", title = "2022 Coverage", opacity = 0.9)
-# 
-# leaflet(conf2024_ll) |>
-#   addTiles() |>
-#   addPolylines(color = "#1F78B4", weight = 3, opacity = 0.9) |>
-#   addLegend(position = "bottomright", colors = "#1F78B4",
-#             labels = "Conflated Segments", title = "2024 Coverage", opacity = 0.9)
-suppressMessages(
-  print(
-    ggplot(conf2022_ll) +
-      annotation_map_tile(type = "osm", zoom = 10, quiet = TRUE) +
-      geom_sf(color = "#1F78B4", linewidth = 1.5, alpha = 0.9) +
-      annotation_scale(location = "bl") +
-      labs(title = "2022 Coverage \u2014 Conflated Segments") +
-      theme_void()
-  )
-)
-```
-
-```{r, echo = F, message = F, warning = F, cache = T, results = 'hide', fig.pos = "H", fig.height = 3.5, out.width = "90%"}
-suppressMessages(
-  print(
-    ggplot(conf2024_ll) +
-      annotation_map_tile(type = "osm", zoom = 10, quiet = TRUE) +
-      geom_sf(color = "#1F78B4", linewidth = 1.5, alpha = 0.9) +
-      annotation_scale(location = "bl") +
-      labs(title = "2024 Coverage \u2014 Conflated Segments") +
-      theme_void()
-  )
-)
-```
-
-\newpage
+Note: More details on MN DOT's plausibility screen are described in the *2024 Mobile Source Data for AADT Implementation Analysis* (Methodology section). Applying a similar filter to the Iowa data would likely reduce MAPE estimates across buckets, closing some — though not necessarily all — of the gap between Iowa and Minnesota results. That filter was not applied here for two reasons: first, it requires a prior-year official IADOT count for each segment against which to assess percent change, and complete prior-year counts were not available for the full set of conflated segments; second, presenting unfiltered results provides a more conservative and complete picture of StreetLight performance across the Iowa interstate network, avoiding any implicit imputation of which segments would have passed a tolerance screen.
 
 ## Metrics Comparison
 
@@ -208,6 +232,8 @@ kable(
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 ```
 
+\newpage
+
 ### Bucketing 
 
 ```{r, echo = F, message = F, warning = F, fig.pos = "H"}
@@ -240,20 +266,15 @@ make_bucket_table(conf2022, "AADT Bucket Comparison — 2022")
 make_bucket_table(conf2024, "AADT Bucket Comparison — 2024")
 ```
 
-\newpage 
-
 ```{r, echo = F, message = F, warning = F, fig.pos = "H"}
 make_misclass_table <- function(data, title) {
   df <- st_drop_geometry(data)
-  
   bucket_names <- c("Sub-7,500", "7,500-9,999", "10,000-19,999", "20,000+")
-  
   df <- df |>
     mutate(
       bucket_iadot = bucket_names[as.integer(factor(bucket_label_mndot(AADT_IADOT), levels = bucket_levels))],
       bucket_stl   = bucket_names[as.integer(factor(bucket_label_mndot(VOLUME_STL),  levels = bucket_levels))]
     )
-  
   transitions <- df |>
     filter(!is.na(bucket_iadot), !is.na(bucket_stl)) |>
     mutate(
@@ -263,7 +284,6 @@ make_misclass_table <- function(data, title) {
       )
     ) |>
     count(transition)
-  
   row_order <- c(
     "Stayed the Same",
     "Sub-7,500 \u2192 7,500-9,999", "Sub-7,500 \u2192 10,000-19,999", "Sub-7,500 \u2192 20,000+",
@@ -271,15 +291,12 @@ make_misclass_table <- function(data, title) {
     "10,000-19,999 \u2192 Sub-7,500", "10,000-19,999 \u2192 7,500-9,999", "10,000-19,999 \u2192 20,000+",
     "20,000+ \u2192 Sub-7,500", "20,000+ \u2192 7,500-9,999", "20,000+ \u2192 10,000-19,999"
   )
-  
   result <- tibble(transition = row_order) |>
     left_join(transitions, by = "transition") |>
     mutate(n = replace_na(n, 0))
-  
-  total_obs     <- sum(result$n)
+  total_obs      <- sum(result$n)
   total_misclass <- sum(result$n[result$transition != "Stayed the Same"])
-  
-  result <- bind_rows(
+  bind_rows(
     result[1, ],
     tibble(transition = "Total Misclassified", n = total_misclass),
     result[-1, ]
@@ -292,31 +309,30 @@ make_misclass_table <- function(data, title) {
         round(n / total_misclass * 100, 1)
       )
     ) |>
-    rename(Category = transition, Count = n)
-  
-  result |>
-    kable(caption = title, format.args = list(big.mark = ","), na = "—") |>
-    kable_styling(
-      bootstrap_options = c("striped", "hover", "condensed"),
-      full_width = FALSE
-    ) |>
+    rename(Category = transition, Count = n) |>
+    kable(caption = title, format.args = list(big.mark = ","), na = "—",
+          booktabs = TRUE) |>
+    kable_styling(latex_options = c("condensed", "hold_position"),
+              full_width = FALSE)|>
     row_spec(2, bold = TRUE)
 }
 
 make_misclass_table(conf2022, "AADT Bucket Misclassification — 2022")
+```
+
+\clearpage
+
+```{r, echo = F, message = F, warning = F, fig.pos = "H"}
 make_misclass_table(conf2024, "AADT Bucket Misclassification — 2024")
 ```
 
 ### MAPE 
 
-```{r mape-2022, echo = F, message = F, warning = F, fig.pos = "H"}
+MAPE is the primary accuracy benchmark used by both FHWA and MN DOT, making it the most direct basis for cross-study comparison. Values below roughly 10% are generally within acceptable bounds for medium-to-high-volume roads under FHWA Table 14 guidance, though the applicable threshold varies with sample size. Iowa estimates exceed MN DOT values in all non-missing buckets, with the gap widening at lower volumes.
+
+```{r mape-tables, echo = F, message = F, warning = F, results = 'asis'}
 mn_mape_ref <- tibble(
-  Bucket = c(
-    "Sub-7,500",
-    "(7,500-9,999)",
-    "(10,000-19,999)",
-    "(20,000+)"
-  ),
+  Bucket = c("Sub-7,500", "(7,500-9,999)", "(10,000-19,999)", "(20,000+)"),
   MAPE_MN = c(NA, 12.16, 6.28, 5.81)
 )
 
@@ -328,35 +344,37 @@ tab_mape_2024 <- summary_2024 |>
   transmute(Bucket = bucket, n, MAPE = round(MAPE, 2)) |>
   left_join(mn_mape_ref, by = "Bucket")
 
-kable(
-  tab_mape_2022,
-  caption = "MAPE by AADT Bucket — 2022",
-  col.names = c("AADT Bucket", "n", "MAPE (%)", "MN MAPE (%)"),
-  format.args = list(big.mark = ",")
-) |>
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+t1 <- kable(tab_mape_2022, format = "latex", booktabs = TRUE,
+            col.names = c("AADT Bucket", "n", "MAPE (%)", "MN MAPE (%)"))
+
+t2 <- kable(tab_mape_2024, format = "latex", booktabs = TRUE,
+            col.names = c("AADT Bucket", "n", "MAPE (%)", "MN MAPE (%)"))
+
+cat("\\begin{table}[H]
+\\centering
+\\begin{minipage}[t]{0.48\\textwidth}
+\\centering
+\\small
+\\captionof{table}{MAPE by AADT Bucket --- 2022}
+", t1, "
+\\end{minipage}
+\\hfill
+\\begin{minipage}[t]{0.48\\textwidth}
+\\centering
+\\small
+\\captionof{table}{MAPE by AADT Bucket --- 2024}
+", t2, "
+\\end{minipage}
+\\end{table}")
 ```
 
-```{r mape-2024, echo = F, message = F, warning = F, fig.pos = "H"}
-kable(
-  tab_mape_2024,
-  caption = "MAPE by AADT Bucket — 2024",
-  col.names = c("AADT Bucket", "n", "MAPE (%)", "MN MAPE (%)"),
-  format.args = list(big.mark = ",")
-) |>
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
-```
+### Signed Percent Error (SPE)
 
-### Signed Percent Error 
+Signed percent error captures the direction of bias — whether StreetLight tends to overestimate or underestimate relative to Iowa DOT counts. Positive values indicate overestimation. Iowa estimates are positive across all buckets and years, in contrast to MN DOT's mixed-sign pattern, suggesting a consistent directional tendency that becomes more pronounced at lower volumes.
 
-```{r, echo = F, message = F, warning = F, fig.pos = "H"}
+```{r, echo = F, message = F, warning = F, results = 'asis'}
 mn_spe_ref <- tibble(
-  Bucket = c(
-    "Sub-7,500",
-    "(7,500-9,999)",
-    "(10,000-19,999)",
-    "(20,000+)"
-  ),
+  Bucket = c("Sub-7,500", "(7,500-9,999)", "(10,000-19,999)", "(20,000+)"),
   SPE_MN = c(NA, -4.02, 0.26, -3.25)
 )
 
@@ -368,34 +386,37 @@ tab_spe_2024 <- summary_2024 |>
   transmute(Bucket = bucket, n, Mean_PE = round(Mean_PE, 2)) |>
   left_join(mn_spe_ref, by = "Bucket")
 
-kable(
-  tab_spe_2022,
-  caption = "Signed Percent Error by AADT Bucket — 2022",
-  col.names = c("AADT Bucket", "n", "Signed % Error", "MN Signed % Error"),
-  format.args = list(big.mark = ",")
-) |>
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+t1 <- kable(tab_spe_2022, format = "latex", booktabs = TRUE,
+            col.names = c("AADT Bucket", "n", "Signed % Error", "MN Signed % Error"))
 
-kable(
-  tab_spe_2024,
-  caption = "Signed Percent Error by AADT Bucket — 2024",
-  col.names = c("AADT Bucket", "n", "Signed % Error", "MN Signed % Error"),
-  format.args = list(big.mark = ",")
-) |>
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+t2 <- kable(tab_spe_2024, format = "latex", booktabs = TRUE,
+            col.names = c("AADT Bucket", "n", "Signed % Error", "MN Signed % Error"))
+
+cat("\\begin{table}[H]
+\\centering
+\\begin{minipage}[t]{0.48\\textwidth}
+\\centering
+\\footnotesize
+\\captionof{table}{SPE by AADT Bucket --- 2022}
+", t1, "
+\\end{minipage}
+\\hfill
+\\begin{minipage}[t]{0.48\\textwidth}
+\\centering
+\\footnotesize
+\\captionof{table}{SPE by AADT Bucket --- 2024}
+", t2, "
+\\end{minipage}
+\\end{table}")
 ```
 
-### Absolute Percent Error Standard Deviation
+### Absolute Percent Error Standard Deviation (APE SD)
 
-```{r, echo = F, message = F, warning = F, fig.pos = "H"}
-### Absolute Percent Error Standard Deviation
+APE SD measures consistency across segments — a low value alongside low MAPE indicates reliable performance not just on average but across individual locations. Iowa APE SD values are substantially higher than MN DOT's in all reported buckets, indicating that even where average accuracy is acceptable, there is considerable segment-to-segment variability. The 2022 Sub-7,500 value of 150.3% is likely driven by one or more high-leverage outliers rather than a general pattern; see Section 5.2.
+
+```{r, echo = F, message = F, warning = F, results = 'asis'}
 mn_ape_sd_ref <- tibble(
-  Bucket = c(
-    "Sub-7,500",
-    "(7,500-9,999)",
-    "(10,000-19,999)",
-    "(20,000+)"
-  ),
+  Bucket = c("Sub-7,500", "(7,500-9,999)", "(10,000-19,999)", "(20,000+)"),
   APE_SD_MN = c(NA, 8.30, 4.98, 4.42)
 )
 
@@ -407,75 +428,93 @@ tab_ape_sd_2024 <- summary_2024 |>
   transmute(Bucket = bucket, n, APE_SD = round(APE_SD, 2)) |>
   left_join(mn_ape_sd_ref, by = "Bucket")
 
-kable(
-  tab_ape_sd_2022,
-  caption = "APE Standard Deviation by AADT Bucket — 2022",
-  col.names = c("AADT Bucket", "n", "APE SD (%)", "MN APE SD (%)"),
-  format.args = list(big.mark = ",")
-) |>
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+t1 <- kable(tab_ape_sd_2022, format = "latex", booktabs = TRUE,
+            col.names = c("AADT Bucket", "n", "APE SD (%)", "MN APE SD (%)"))
 
-kable(
-  tab_ape_sd_2024,
-  caption = "APE Standard Deviation by AADT Bucket — 2024",
-  col.names = c("AADT Bucket", "n", "APE SD (%)", "MN APE SD (%)"),
-  format.args = list(big.mark = ",")
-) |>
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+t2 <- kable(tab_ape_sd_2024, format = "latex", booktabs = TRUE,
+            col.names = c("AADT Bucket", "n", "APE SD (%)", "MN APE SD (%)"))
+
+cat("\\begin{table}[H]
+\\centering
+\\begin{minipage}[t]{0.48\\textwidth}
+\\centering
+\\footnotesize
+\\captionof{table}{APE SD by AADT Bucket --- 2022}
+", t1, "
+\\end{minipage}
+\\hfill
+\\begin{minipage}[t]{0.48\\textwidth}
+\\centering
+\\footnotesize
+\\captionof{table}{APE SD by AADT Bucket --- 2024}
+", t2, "
+\\end{minipage}
+\\end{table}")
 ```
 
 ## Additional Metrics
 
-### Median Percent Error 
+### Median Percent Error (MPE)
 
-```{r, echo = F, message = F, warning = F, fig.pos = "H"}
+Median percent error complements the mean signed percent error by providing a more robust measure of typical bias — one less sensitive to segments with extreme over- or underestimates. Where the mean and median diverge substantially within a bucket, this signals that a small number of segments are disproportionately driving the average, which is particularly relevant in the Sub-7,500 bucket.
+
+```{r, echo = F, message = F, warning = F, results = 'asis'}
 tab_mpe_2022 <- summary_2022 |>
   transmute(Bucket = bucket, n, Median_Percent_Error = round(Median_Percent_Error, 2))
-
 tab_mpe_2024 <- summary_2024 |>
   transmute(Bucket = bucket, n, Median_Percent_Error = round(Median_Percent_Error, 2))
 
-kable(
-  tab_mpe_2022,
-  caption = "Median Percent Error by AADT Bucket — 2022",
-  col.names = c("AADT Bucket", "n", "Median % Error"),
-  format.args = list(big.mark = ",")
-) |>
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+t1 <- kable(tab_mpe_2022, format = "latex", booktabs = TRUE,
+            col.names = c("AADT Bucket", "n", "Median % Error"))
 
-kable(
-  tab_mpe_2024,
-  caption = "Median Percent Error by AADT Bucket — 2024",
-  col.names = c("AADT Bucket", "n", "Median % Error"),
-  format.args = list(big.mark = ",")
-) |>
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+t2 <- kable(tab_mpe_2024, format = "latex", booktabs = TRUE,
+            col.names = c("AADT Bucket", "n", "Median % Error"))
+
+cat("\\begin{table}[H]
+\\centering
+\\begin{minipage}[t]{0.45\\textwidth}
+\\centering
+\\captionof{table}{MPE by AADT Bucket --- 2022}
+", t1, "
+\\end{minipage}
+\\hfill
+\\begin{minipage}[t]{0.45\\textwidth}
+\\centering
+\\captionof{table}{MPE by AADT Bucket --- 2024}
+", t2, "
+\\end{minipage}
+\\end{table}")
 ```
 
 ### NRMSE
 
-```{r, echo = F, message = F, warning = F, fig.pos = "H"}
+NRMSE provides a scale-normalized measure of overall error that penalizes large deviations more heavily than MAPE. Because it squares individual errors before averaging, it is more sensitive to outlier segments than MAPE is — so a notably higher NRMSE relative to MAPE within the same bucket is a signal that a small number of segments are contributing disproportionate error. The Sub-7,500 values (49–66%) illustrate this clearly.
+
+```{r, echo = F, message = F, warning = F, results = 'asis'}
 tab_nrmse_2022 <- summary_2022 |> transmute(Bucket = bucket, n, NRMSE = round(NRMSE, 2))
 tab_nrmse_2024 <- summary_2024 |> transmute(Bucket = bucket, n, NRMSE = round(NRMSE, 2))
 
-kable(
-  tab_nrmse_2022,
-  caption = "NRMSE by AADT Bucket — 2022",
-  col.names = c("AADT Bucket", "n", "NRMSE (%)"),
-  format.args = list(big.mark = ",")
-) |>
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+t1 <- kable(tab_nrmse_2022, format = "latex", booktabs = TRUE,
+            col.names = c("AADT Bucket", "n", "NRMSE (%)"))
 
-kable(
-  tab_nrmse_2024,
-  caption = "NRMSE by AADT Bucket — 2024",
-  col.names = c("AADT Bucket", "n", "NRMSE (%)"),
-  format.args = list(big.mark = ",")
-) |>
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+t2 <- kable(tab_nrmse_2024, format = "latex", booktabs = TRUE,
+            col.names = c("AADT Bucket", "n", "NRMSE (%)"))
+
+cat("\\begin{table}[H]
+\\centering
+\\begin{minipage}[t]{0.45\\textwidth}
+\\centering
+\\captionof{table}{NRMSE by AADT Bucket --- 2022}
+", t1, "
+\\end{minipage}
+\\hfill
+\\begin{minipage}[t]{0.45\\textwidth}
+\\centering
+\\captionof{table}{NRMSE by AADT Bucket --- 2024}
+", t2, "
+\\end{minipage}
+\\end{table}")
 ```
-
-\newpage 
 
 ## Metrics
 
@@ -492,7 +531,7 @@ $$
 \times 100
 $$
 
-MAPE measures average accuracy as a percentage of the reference (IADOT) count, ignoring the direction of error. Each segment's absolute percentage deviation from the ground-truth AADT is averaged across all segments in the bucket. Lower values indicate better accuracy; a MAPE of 0 would indicate perfect agreement.
+MAPE measures average accuracy as a percentage of the reference (IADOT) count, ignoring the direction of error. Each segment's absolute percentage deviation from the ground-truth AADT is averaged across all segments in the bucket. Lower values indicate better accuracy; a MAPE of 0 would indicate perfect agreement. MAPE is used here for consistency with FHWA and MN DOT benchmarks, though it can become unstable at low AADT levels where small absolute differences translate to large percentage errors — a limitation most relevant to the Sub-7,500 bucket.
 
 ### Mean Signed Percentage Error (Bias)
 
@@ -552,64 +591,61 @@ $$
 
 NRMSE penalizes large errors more heavily than MAPE by squaring deviations before averaging, making it sensitive to outlier segments with especially poor agreement. Normalizing by the mean AADT within the bucket expresses the error as a percentage of typical volume, enabling comparison across buckets with different volume scales.
 
-**Note:**\
-*Equations taken from StreetLight AADT 2024 – Initial Release: Methodology and Validation White Paper*, page 5
-
-# Question 2: Independence 
-
-## Conceptual Framing
-
-StreetLight estimates and DOT counts measure the same underlying quantity: true average annual traffic volume. Agreement between the two is therefor expected and, by itself, does not establish methodological dependence.
-
-The relevant question is whether DOT counts are used **directly** to produce segment-level estimates, or whether they are used only for calibration and validation of probe-based models.
-
-## Summary Assessment
-
-Current evidence supports StreetLight estimates being primarily probe-driven rather than directly derived from Iowa DOT counts. The concern that Iowa DOT is effectively "paying to receive its own data back" appears overstated based on available documentation. The more substantive and underappreciated risk is different: *Reducing or eliminating Iowa DOT tube counts would degrade both parties' ability to assess whether StreetLight estimates are accurate for Iowa segments*.
-
-This matters for three reasons:
-
-- **DOT loses independent validation.** Without ground-truth counts on a representative set of segments, there is no external check on StreetLight accuracy. Observed agreement in this report is itself conditional on having DOT counts to compare against.
-- **StreetLight loses Iowa-specific calibration signal.** DOT counts are used for model calibration and plausibility screening. Removing them degrades the model's ability to self-correct for Iowa-specific conditions.
-- **The source of accuracy becomes unverifiable.** For any given segment, it is currently impossible to determine whether a close StreetLight estimate reflects genuine probe-data quality or is partly an  artifact of Iowa DOT counts having been used during calibration. Without ongoing counts, this ambiguity is permanent and estimates must be taken on faith.
-
-The question of methodological independence is therefore secondary to the practical question of *what monitoring practice preserves the ability to detect and respond to degraded accuracy over time*.
-
-### Implications
-
-- Strong observed agreement between DOT counts and StreetLight estimates is expected and is not diagnostic of dependence — both measure the same underlying quantity
-- Statistical tests cannot resolve whether agreement reflects probe quality or calibration influence
-- Definitive confirmation would require vendor disclosure that Iowa DOT data are not used as direct inputs to segment-level estimation, and/or Iowa-specific holdout validation
-- One possible path forward is a **targeted retention strategy** for tube counts on a small set of well-chosen segments (see *Recommended Monitoring Segments* below)
-
-## Details
-
-The following provides further detail on the basis for this assessment: why agreement is expected, how independence should be evaluated, what evidence is currently available, and what uncertainties remain.
-
-### Why Agreement Is Expected
-
-When comparing StreetLight estimates to Iowa DOT observed counts, high correlation is inevitable because both aim to measure the same latent quantity: true average annual traffic volume.
-
-- High correlation is therefore necessary but not diagnostic.
-- The relevant question is not *whether* the estimates agree, but *why* they agree.
-
-### What Methodological Independence Means in Practice
-
-Methodological independence depends on *how counts enter the modeling pipeline*, not whether they appear anywhere in it. 
-
-The practical question is:
-
-> To what extent are Iowa DOT counts used to *produce* StreetLight Iowa estimates, rather than simply evaluate them?
-
-Current evidence indicates that Iowa DOT counts are used for calibration and validation rather than direct estimation, though documentation does not fully rule out the use of Iowa-specific count data during model training.
+**Note:** *Equations taken from StreetLight AADT 2024 – Initial Release: Methodology and Validation White Paper*, page 5
 
 # Segment-Level Diagnostics
 
+The analyses in this section move from aggregate bucket-level summaries to individual segment behavior. Two complementary diagnostics are presented: segments with persistently poor agreement (flagged as potential data quality or alignment issues) and segments with persistently strong agreement (natural candidates for an ongoing monitoring strategy). Together, these provide a concrete basis for evaluating where StreetLight estimates can be relied upon and where additional scrutiny is warranted.
+
+\newpage 
+
+## Initial Metrics Coverage 
+
+```{r, echo = F, message = F, warning = F, cache = T, results = 'hide', fig.pos = "H", fig.height = 3.5, out.width = "90%"}
+conf2022_ll <- st_transform(conf2022, 4326)
+conf2024_ll <- st_transform(conf2024, 4326)
+
+# leaflet(conf2022_ll) |>
+#   addTiles() |>
+#   addPolylines(color = "#1F78B4", weight = 3, opacity = 0.9) |>
+#   addLegend(position = "bottomright", colors = "#1F78B4",
+#             labels = "Conflated Segments", title = "2022 Coverage", opacity = 0.9)
+# 
+# leaflet(conf2024_ll) |>
+#   addTiles() |>
+#   addPolylines(color = "#1F78B4", weight = 3, opacity = 0.9) |>
+#   addLegend(position = "bottomright", colors = "#1F78B4",
+#             labels = "Conflated Segments", title = "2024 Coverage", opacity = 0.9)
+suppressMessages(
+  print(
+    ggplot(conf2022_ll) +
+      annotation_map_tile(type = "osm", zoom = 10, quiet = TRUE) +
+      geom_sf(color = "#1F78B4", linewidth = 1.5, alpha = 0.9) +
+      annotation_scale(location = "bl") +
+      labs(title = "2022 Coverage \u2014 Conflated Segments") +
+      theme_void()
+  )
+)
+```
+
+```{r, echo = F, message = F, warning = F, cache = T, results = 'hide', fig.pos = "H", fig.height = 3.5, out.width = "90%"}
+suppressMessages(
+  print(
+    ggplot(conf2024_ll) +
+      annotation_map_tile(type = "osm", zoom = 10, quiet = TRUE) +
+      geom_sf(color = "#1F78B4", linewidth = 1.5, alpha = 0.9) +
+      annotation_scale(location = "bl") +
+      labs(title = "2024 Coverage \u2014 Conflated Segments") +
+      theme_void()
+  )
+)
+```
+
+\newpage
+
 ## Beyond 100% - Bad Matches 
 
-Segments where StreetLight APE exceeds `r threshold`% in **both** 2022 and 2024 are flagged below. Requiring the threshold to be exceeded in both years reduces the chance that a segment is flagged due to a single-year data anomaly. Requiring the threshold to be met in both years reduces the likelihood of flagging segments with one-off data issues in a single year. A threshold of 100% indicates StreetLight volume is more than double (or less than half) the IADOT count; this conservative threshold is used here to surface only the most severe and persistent discrepancies.
-
-\clearpage
+Segments where StreetLight APE exceeds `r threshold`% in **both** 2022 and 2024 are flagged below. Requiring the threshold to be exceeded in both years reduces the chance that a segment is flagged due to a single-year data anomaly rather than a persistent discrepancy. A threshold of 100% indicates StreetLight volume is more than double (or less than half) the IADOT count; this conservative threshold is used here to surface only the most severe and persistent discrepancies. Segments flagged under this criterion likely reflect one or more of the following: low probe-vehicle penetration on a given corridor, complex traffic patterns near interchanges or ramps that challenge segment-level attribution, or misalignment between StreetLight and IADOT segment boundary definitions.
 
 ```{r, echo = F, message = F, warning = F, cache = T, fig.pos = "H"}
 flag_segments <- function(data) {
@@ -658,6 +694,11 @@ problematic_ids |>
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                 full_width = FALSE, latex_options = "hold_position")
 
+```
+
+\clearpage
+
+```{r, echo = F, message = F, warning = F, cache = T}
 problematic_ids |>
   mutate(
     `Deviation - Overall` = round((APE_2022 + APE_2024) / 2, 1),
@@ -701,8 +742,6 @@ problematic_ids |>
 #             opacity = 0.9)
 ```
 
-\newpage
-
 ## Within 5% - Strong Matches
 
 Segments where StreetLight APE is within `r good_threshold`% in *both* 2022 and 2024 are highlighted below.
@@ -735,8 +774,8 @@ suppressMessages(
       annotation_map_tile(type = "cartolight", zoom = 7, quiet = TRUE, cachedir = "map_tiles/") +
       geom_sf(color = "forestgreen", linewidth = 1.5, alpha = 0.9) +
       annotation_scale(location = "bl") +
-      labs(title = paste0("Strong Match Segments \u2014 APE \u2264 ", good_threshold, "% Both Years")) +
-      theme_void()
+      labs(title = bquote("Strong Match Segments — APE" <= .(good_threshold) * "% Both Years")) + 
+  theme_void()
   )
 )
 
@@ -784,7 +823,11 @@ good_ids <- inner_join(
     select(segment_id, AADT_IADOT_2024 = AADT_IADOT, VOLUME_STL_2024 = VOLUME_STL, APE_2024 = APE, PE_2024 = PE),
   by = "segment_id"
 )
+```
 
+\newpage 
+
+```{r good-tables2, echo = F, warning = F, message = F, fig.pos = "H"}
 # Table 2: Expected vs Observed for segments matching in BOTH years at good_threshold
 good_ids |>
   select(
@@ -823,7 +866,7 @@ good_ids |>
 
 ## Recommended Monitoring Segments
 
-The segment-level diagnostics suggest a practical strategy for reducing tube-count placement and maintenance while preserving the ability to validate StreetLight estimates over time. The goal is a small set of anchor segments that are geographically distributed, representative of the volume ranges of interest, and for which StreetLight accuracy is already well-established — providing assurance that future deviations represent meaningful signals rather than noise.
+The segment-level diagnostics point to a concrete path for preserving long-term validation capability. The core trade-off Iowa DOT faces — reducing tube-count costs versus maintaining an independent accuracy check — does not require an all-or-nothing decision. A small, well-chosen set of anchor segments can serve as an ongoing monitoring baseline, making it possible to detect future degradation in StreetLight performance without sustaining the full cost of current tube density. The goal is a small set of anchor segments that are geographically distributed, representative of the volume ranges of interest, and for which StreetLight accuracy is already well-established — providing assurance that future deviations represent meaningful signals rather than noise.
 
 Candidate segments should satisfy:
 
@@ -832,6 +875,6 @@ Candidate segments should satisfy:
 - Geographic spread across the coverage area (not clustered on a single corridor)
 - Proximity to existing tube infrastructure (minimizes setup burden and safety risk on high-speed segments)
 
-The 10 segments in Table 21 meeting the $\leq 1\%$ threshold in both years form a natural, conservative starting pool. A final selection of 3–5 segments from this pool — chosen to maximize geographic spread and volume-range coverage — would provide an ongoing validation baseline at substantially reduced cost relative to current tube density. Analysts preferring a broader candidate pool may relax the APE threshold to $\leq 5\%$, which remains within FHWA acceptable bounds; however, this expands the pool to roughly 94 segments and requires additional filtering on geographic and volume criteria to arrive at a manageable monitoring set.
+The 10 segments in Table 22 meeting the $\leq 1\%$ threshold in both years form a natural, conservative starting pool. A final selection of 3–5 segments from this pool — chosen to maximize geographic spread and volume-range coverage — would provide an ongoing validation baseline at substantially reduced cost relative to current tube density. Analysts preferring a broader candidate pool may relax the APE threshold to $\leq 5\%$, which remains within FHWA acceptable bounds; however, this expands the pool to roughly 94 segments and requires additional filtering on geographic and volume criteria to arrive at a manageable monitoring set.
 
-This approach does not eliminate uncertainty about StreetLight's use of Iowa DOT data during calibration. However, it preserves the more important operational capability: the ability to detect future degradation in StreetLight accuracy using an independent validation baseline.
+This approach does not eliminate uncertainty about StreetLight's use of Iowa DOT data during calibration. However, it preserves the more important operational capability: the ability to detect future degradation in StreetLight accuracy using an independent validation baseline. Final segment selection from this pool is left to Iowa DOT, based on operational knowledge of existing tube placement, access constraints, and corridor priorities not captured in the data alone.
