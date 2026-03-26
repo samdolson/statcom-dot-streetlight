@@ -15,9 +15,9 @@ header-includes:
 
 # Executive Summary
 
-This report evaluates StreetLight Data's AADT estimates for Iowa interstate segments on two dimensions: methodological independence from Iowa DOT counts, and accuracy relative to FHWA and Minnesota DOT benchmarks. The findings are intended to inform how Iowa DOT weighs the trade-offs between reduced tube-count deployment and the accuracy limitations StreetLight exhibits at lower volumes.
+This report evaluates StreetLight Data's AADT estimates for Iowa interstate segments. Its focus is twofold: evaluate the methodological independence from Iowa DOT counts, and assess estimation accuracy relative to FHWA and Minnesota DOT benchmarks. The findings are intended to inform how Iowa DOT weighs the trade-offs between reduced tube-count deployment and the accuracy limitations StreetLight exhibits.
 
-**On independence:** Available documentation supports StreetLight estimates being primarily probe-driven, with Iowa DOT counts used for calibration and validation rather than direct segment-level estimation. This cannot be confirmed without explicit vendor disclosure, and the more consequential concern may be operational: reducing physical tube counts would eliminate the independent baseline needed to detect future degradation in StreetLight accuracy over time.
+**On independence:** Available documentation supports StreetLight estimates being primarily probe-driven, with Iowa DOT counts used for calibration and validation rather than direct segment-level estimation. This cannot be confirmed without explicit vendor disclosure, however, and the more consequential concern may be operational: Reducing physical tube counts would eliminate the independent baseline needed to detect future (potential) degradation in StreetLight accuracy over time.
 
 **On accuracy:** Performance varies substantially by volume range.
 
@@ -30,7 +30,7 @@ This report evaluates StreetLight Data's AADT estimates for Iowa interstate segm
 
 StreetLight estimates are consistently higher than Iowa DOT counts across all volume ranges — a directional tendency that is modest at higher volumes but pronounced at lower ones.
 
-**Segment-level diagnostics** identify 7 persistently problematic segments (APE > 100% in both years) and a pool of 10 segments with exceptionally close agreement (APE $\leq$ 1% both years). The latter represents a natural starting point for an ongoing monitoring strategy that would preserve validation capability at reduced cost. Full details are provided in Section 5.
+**Segment-level diagnostics** identify 7 persistently problematic segments (APE > 100% in both years) and a pool of 10 segments with exceptionally close agreement (APE $\leq$ 1% both years). The latter represents a natural starting point for a potential monitoring strategy that would preserve validation capability at reduced cost. Full details are provided in Section 5.
 
 \newpage
 
@@ -63,6 +63,7 @@ bucket_levels <- c("Sub-7,500", "(7,500-9,999)", "(10,000-19,999)", "(20,000+)")
 
 threshold <- 100
 good_threshold <- 5
+stringent_thresh <- 1
 ```
 
 # Study Purpose and Research Questions
@@ -77,7 +78,7 @@ The overall goal is not only to assess current agreement, but also to understand
 
 ## Question 1: Independence of StreetLight Estimates
 
-Available evidence supports StreetLight estimates being primarily probe-driven, with Iowa DOT counts used for calibration and validation rather than direct segment-level estimation. Whether observed agreement fully reflects methodological independence — or is partly an artifact of Iowa DOT data having been used during model training — cannot be determined without vendor disclosure. The practical implications of this uncertainty, and the case for retaining a targeted set of physical counts regardless of how the independence question is ultimately resolved, are developed in Section 3.
+Available evidence supports StreetLight estimates being primarily probe-driven, with Iowa DOT counts used for calibration and validation rather than direct segment-level estimation. Whether observed agreement fully reflects methodological independence — or is partly an artefact of Iowa DOT data having been used during model training — cannot be determined without vendor disclosure. The practical implications of this uncertainty, and the case for retaining a targeted set of physical counts regardless of how the independence question is ultimately resolved, are explored in Section 3.
 
 ## Question 2: Accuracy of Streetlight Estimates
 
@@ -85,9 +86,9 @@ StreetLight AADT estimates perform reliably on higher-volume Iowa interstate seg
 
 Across all volume buckets, StreetLight estimates tend to run slightly higher than Iowa DOT counts. This directional tendency is consistent and modest on higher-volume roads, but becomes more pronounced at lower volumes.
 
-Overall, the results support using StreetLight AADT estimates as a credible, independently generated source for higher-volume Iowa interstate segments, with the recommendation that low-volume segments be treated with appropriate caution. These results point to an important practical question: how should DOT balance the cost savings of reduced counter deployment against the accuracy limitations StreetLight exhibits at lower volumes? The findings here suggest a natural strategy — leveraging StreetLight for high-volume segments while maintaining physical counters where estimates are less reliable.
+Overall, the results support using StreetLight AADT estimates as a credible, independently generated source for higher-volume Iowa interstate segments, with the recommendation that low-volume segments be treated with appropriate caution. These results point to an important practical question: How should DOT balance the cost savings of reduced counter deployment against the accuracy limitations StreetLight exhibits at lower volumes? The findings here suggest a one potential strategy — leveraging StreetLight for high-volume segments while maintaining physical counters where estimates are less reliable.
 
-Note: MN DOT applies a data quality filter before computing its published accuracy metrics --- a step not applied here --- so some portion of the gap between Iowa and Minnesota results is methodological rather than reflective of true differences in estimate quality. This distinction is elaborated in Section 4.2.
+Note: MN DOT applies a data quality filter before computing its published accuracy metrics --- a step not applied here --- so some portion of the gap between Iowa and Minnesota results is methodological rather than reflective of true differences in estimate quality. This distinction is detailed in Section 4.2.
 
 # Question 1: Independence 
 
@@ -95,32 +96,32 @@ Note: MN DOT applies a data quality filter before computing its published accura
 
 StreetLight estimates and DOT counts measure the same underlying quantity: true average annual traffic volume. Agreement between the two is therefore expected and, by itself, does not establish methodological dependence.
 
-The relevant question is whether DOT counts are used **directly** to produce segment-level estimates, or whether they are used only for calibration and validation of probe-based models.
+The relevant question is whether DOT counts are used *directly* to produce segment-level estimates, or whether they are used only for calibration and validation of probe-based models.
 
 ## Summary Assessment
 
-Current evidence supports StreetLight estimates being primarily probe-driven rather than directly derived from Iowa DOT counts. The concern that Iowa DOT is effectively "paying to receive its own data back" appears overstated based on available documentation. The more substantive and underappreciated risk is different: *Reducing or eliminating Iowa DOT tube counts would degrade both parties' ability to assess whether StreetLight estimates are accurate for Iowa segments*.
+Current evidence supports StreetLight estimates being primarily probe-driven rather than directly derived from Iowa DOT counts. The concern that Iowa DOT is effectively "paying to receive its own data back" appears overstated based on available documentation. The more substantive and underappreciated risk is different: *Reducing or eliminating Iowa DOT tube counts would degrade both parties' ability to assess whether StreetLight estimates are accurate for Iowa segments in the future*.
 
 This matters for three reasons:
 
 - **DOT loses independent validation.** Without ground-truth counts on a representative set of segments, there is no external check on StreetLight accuracy. Observed agreement in this report is itself conditional on having DOT counts to compare against.
 - **StreetLight loses Iowa-specific calibration signal.** DOT counts are used for model calibration and plausibility screening. Removing them degrades the model's ability to self-correct for Iowa-specific conditions.
-- **The source of accuracy becomes unverifiable.** For any given segment, it is currently impossible to determine whether a close StreetLight estimate reflects genuine probe-data quality or is partly an  artifact of Iowa DOT counts having been used during calibration. Without ongoing counts, this ambiguity is permanent and estimates must be taken on faith.
+- **The source of accuracy becomes unverifiable.** For any given segment, it is currently impossible to determine whether a close StreetLight estimate reflects genuine probe-data quality or is partly an  artefact of Iowa DOT counts having been used during calibration. Without ongoing counts, this ambiguity is permanent and estimates must be taken on faith.
 
 The question of methodological independence is therefore secondary to the practical question of *what monitoring practice preserves the ability to detect and respond to degraded accuracy over time*.
 
 To summarize the state of evidence:
 
 - **What can be concluded:** Available documentation supports StreetLight estimates being primarily probe-driven, with DOT counts used for calibration and validation rather than direct segment-level estimation.
-- **What cannot be concluded:** Whether observed agreement reflects genuine methodological independence or is partly an artifact of Iowa DOT data having been used during model training — a distinction that requires vendor disclosure to resolve.
+- **What cannot be concluded:** Whether observed agreement reflects genuine methodological independence or is partly an artefact of Iowa DOT data having been used during model training — a distinction that requires vendor disclosure to resolve.
 - **Operational implication:** Regardless of how the independence question is ultimately answered, retaining a targeted set of tube counts on well-chosen segments preserves the ability to detect and respond to degraded accuracy over time.
 
 ### Implications
 
-- Strong observed agreement between DOT counts and StreetLight estimates is expected and is not diagnostic of dependence — both measure the same underlying quantity
+- Strong observed agreement between DOT counts and StreetLight estimates is expected and is not diagnostic of dependence, as both measure the same underlying quantity
 - Statistical tests cannot resolve whether agreement reflects probe quality or calibration influence
 - Definitive confirmation would require vendor disclosure that Iowa DOT data are not used as direct inputs to segment-level estimation, and/or Iowa-specific holdout validation
-- One possible path forward is a **targeted retention strategy** for tube counts on a small set of well-chosen segments (see *Recommended Monitoring Segments* below)
+- One possible path forward is a targeted retention strategy for tube counts on a small set of well-chosen segments (see *Recommended Monitoring Segments*, Section 5.4 below)
 
 ## Details
 
@@ -128,7 +129,7 @@ The following provides further detail on the basis for this assessment: why agre
 
 ### Why Agreement Is Expected
 
-When comparing StreetLight estimates to Iowa DOT observed counts, high correlation is inevitable because both aim to measure the same latent quantity: true average annual traffic volume.
+When comparing StreetLight estimates to Iowa DOT observed counts, high correlation is both observed and expected because both aim to measure the same latent quantity: true average annual traffic volume.
 
 - High correlation is therefore necessary but not diagnostic.
 - The relevant question is not *whether* the estimates agree, but *why* they agree.
@@ -158,7 +159,7 @@ MN DOT buckets are used here to allow for direct comparison against an independe
 | Medium-volume evaluation | 10,000 – 19,999 |
 | High-volume evaluation | $\geq$ 20,000 |
 
-The 2022 and 2024 conflated datasets are treated as **separate validation exercises** against the same underlying segment definitions — providing two measurement cycles against which consistency of results can be evaluated, while noting that the repeated use of the same segments across years is partly what motivates the misclassification analysis in Section 4.3.2. The road segments in those files correspond directly to Iowa interstates of interest; the original Iowa DOT data, while more numerous, included segments outside the scope of this work. Throughout this report, Iowa DOT counts serve as the reference standard for evaluation purposes — a conventional and appropriate choice, while recognizing that physical tube counts are themselves subject to measurement error.
+The 2022 and 2024 conflated datasets are treated as **separate validation exercises** against the same underlying segment definitions, providing two measurement cycles against which consistency of results can be evaluated, while noting that the repeated use of the same segments across years is partly what motivates the misclassification analysis in Section 4.3.2. The road segments in those files correspond directly to Iowa interstates of interest; the original Iowa DOT data, while more numerous, included segments outside the scope of this work. Throughout this report, Iowa DOT counts serve as the reference standard for evaluation purposes, while recognizing that physical tube counts are themselves subject to measurement error.
 
 ## Accuracy Assessment 
 
@@ -172,7 +173,10 @@ In the 7,500 to 9,999 bucket, MAPE is 13.0% to 15.3%, somewhat above MN DOT's 12
 
 For the Sub-7,500 bucket — not reported in the MN DOT study — errors are substantially higher and merit particular caution. MAPE ranges from 38.7% (2024) to 47.5% (2022), and NRMSE from 49.1% to 66.3%. These figures far exceed the FHWA Table 14 upper bound of approximately 13--18% for low-volume roads (500--4,999) at the observed sample sizes, and the observed bias similarly exceeds the FHWA $\pm 1.6$--$8.7\%$ TCE median limits. Notably, the 2022 APE SD of 150.3% indicates extreme variability across segments in that year, well above the more moderate 46.6% observed in 2024. The magnitude of this difference likely reflects one or more high-leverage outlier segments in the 2022 sub-7,500 pool rather than a general year-over-year shift in model behavior; the flagged segments in Section 5.2 are a natural starting point for investigation. Regardless, error levels in this bucket fail FHWA accuracy standards by a wide margin, and StreetLight estimates below 7,500 AADT should not be substituted for official counts without substantial additional scrutiny. *This bucket falls outside the range where StreetLight estimates can be considered reliable for any planning or reporting purpose without independent verification.*
 
-Note: More details on MN DOT's plausibility screen are described in the *2024 Mobile Source Data for AADT Implementation Analysis* (Methodology section). Applying a similar filter to the Iowa data would likely reduce MAPE estimates across buckets, closing some — though not necessarily all — of the gap between Iowa and Minnesota results. That filter was not applied here for two reasons: first, it requires a prior-year official IADOT count for each segment against which to assess percent change, and complete prior-year counts were not available for the full set of conflated segments; second, presenting unfiltered results provides a more conservative and complete picture of StreetLight performance across the Iowa interstate network, avoiding any implicit imputation of which segments would have passed a tolerance screen.
+
+**Note:** More details on MN DOT's plausibility screen are described in the *2024 Mobile Source Data for AADT Implementation Analysis* (Methodology section). 
+
+Applying a similar filter to the Iowa data would likely reduce MAPE estimates across buckets, closing some — though not necessarily all — of the gap between Iowa and Minnesota results. That filter was not applied here for two reasons: first, it requires a prior-year official IADOT count for each segment against which to assess percent change, and complete prior-year counts were not available for the full set of conflated segments; second, presenting unfiltered results provides a more conservative and complete picture of StreetLight performance across the Iowa interstate network, avoiding any implicit imputation of which segments would have passed a tolerance screen.
 
 ## Metrics Comparison
 
@@ -456,7 +460,7 @@ cat("\\begin{table}[H]
 
 ### Median Percent Error (MPE)
 
-Median percent error complements the mean signed percent error by providing a more robust measure of typical bias — one less sensitive to segments with extreme over- or underestimates. Where the mean and median diverge substantially within a bucket, this signals that a small number of segments are disproportionately driving the average, which is particularly relevant in the Sub-7,500 bucket.
+MPE is complementary to the mean signed percent error by providing a more robust measure of typical bias — one less sensitive to segments with extreme over- or underestimates. Where the mean and median diverge substantially within a bucket, this signals that a small number of segments are disproportionately driving the average, which is particularly relevant in the Sub-7,500 bucket.
 
 ```{r, echo = F, message = F, warning = F, results = 'asis'}
 tab_mpe_2022 <- summary_2022 |>
@@ -591,6 +595,7 @@ $$
 
 NRMSE penalizes large errors more heavily than MAPE by squaring deviations before averaging, making it sensitive to outlier segments with especially poor agreement. Normalizing by the mean AADT within the bucket expresses the error as a percentage of typical volume, enabling comparison across buckets with different volume scales.
 
+
 **Note:** *Equations taken from StreetLight AADT 2024 – Initial Release: Methodology and Validation White Paper*, page 5
 
 # Segment-Level Diagnostics
@@ -645,7 +650,7 @@ suppressMessages(
 
 ## Beyond 100% - Bad Matches 
 
-Segments where StreetLight APE exceeds `r threshold`% in **both** 2022 and 2024 are flagged below. Requiring the threshold to be exceeded in both years reduces the chance that a segment is flagged due to a single-year data anomaly rather than a persistent discrepancy. A threshold of 100% indicates StreetLight volume is more than double (or less than half) the IADOT count; this conservative threshold is used here to surface only the most severe and persistent discrepancies. Segments flagged under this criterion likely reflect one or more of the following: low probe-vehicle penetration on a given corridor, complex traffic patterns near interchanges or ramps that challenge segment-level attribution, or misalignment between StreetLight and IADOT segment boundary definitions.
+Segments where StreetLight APE exceeds `r threshold`% in *both* 2022 and 2024 are flagged below. Requiring the threshold to be exceeded in both years reduces the chance that a segment is flagged due to a single-year data anomaly rather than a persistent discrepancy. A threshold of 100% indicates StreetLight volume is more than double (or less than half) the IADOT count; this conservative threshold is used here to surface only the most severe and persistent discrepancies. Segments flagged under this criterion likely reflect one or more of the following: low probe-vehicle penetration on a given corridor, complex traffic patterns near interchanges or ramps that challenge segment-level attribution, or misalignment between StreetLight and IADOT segment boundary definitions.
 
 ```{r, echo = F, message = F, warning = F, cache = T, fig.pos = "H"}
 flag_segments <- function(data) {
@@ -796,6 +801,40 @@ suppressMessages(
 #   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 ```
 
+\newpage 
+
+```{r, echo = F, message = F, warning = F, cache = T, results = 'hide', fig.pos = "H", fig.height = 3.5, out.width = "90%"}
+good_2022 <- flag_segments(conf2022) |>
+  filter(APE <= stringent_thresh) |>
+  select(segment_id, AADT_IADOT_2022 = AADT_IADOT, VOLUME_STL_2022 = VOLUME_STL, APE_2022 = APE, PE_2022 = PE)
+
+good_2024 <- flag_segments(conf2024) |>
+  filter(APE <= stringent_thresh) |>
+  select(segment_id, AADT_IADOT_2024 = AADT_IADOT, VOLUME_STL_2024 = VOLUME_STL, APE_2024 = APE, PE_2024 = PE)
+
+# Segments with strong matches in BOTH years
+good_ids <- inner_join(good_2022, good_2024, by = "segment_id")
+
+# Re-attach geometry from 2022 for mapping
+good_sf <- conf2022 |>
+  filter(segment_id %in% good_ids$segment_id) |>
+  left_join(good_ids, by = "segment_id") |>
+  select(-any_of(c("AADT_IADOT_2022", "VOLUME_STL_2022", "AADT_IADOT_2024", "VOLUME_STL_2024"))) |>
+  st_transform(4326)
+
+# Map
+suppressMessages(
+  print(
+    ggplot(good_sf) +
+      annotation_map_tile(type = "cartolight", zoom = 7, quiet = TRUE, cachedir = "map_tiles/") +
+      geom_sf(color = "forestgreen", linewidth = 1.5, alpha = 0.9) +
+      annotation_scale(location = "bl") +
+      labs(title = bquote("Strong Match Segments — APE" <= .(stringent_thresh) * "% Both Years")) + 
+  theme_void()
+  )
+)
+```
+
 ```{r good-tables, echo = F, warning = F, message = F, fig.pos = "H"}
 good_thresholds <- c(1, 5, 10)
 
@@ -824,8 +863,6 @@ good_ids <- inner_join(
   by = "segment_id"
 )
 ```
-
-\newpage 
 
 ```{r good-tables2, echo = F, warning = F, message = F, fig.pos = "H"}
 # Table 2: Expected vs Observed for segments matching in BOTH years at good_threshold
@@ -864,11 +901,13 @@ good_ids |>
 #             opacity = 0.9)
 ```
 
+\newpage 
+
 ## Recommended Monitoring Segments
 
-The segment-level diagnostics point to a concrete path for preserving long-term validation capability. The core trade-off Iowa DOT faces — reducing tube-count costs versus maintaining an independent accuracy check — does not require an all-or-nothing decision. A small, well-chosen set of anchor segments can serve as an ongoing monitoring baseline, making it possible to detect future degradation in StreetLight performance without sustaining the full cost of current tube density. The goal is a small set of anchor segments that are geographically distributed, representative of the volume ranges of interest, and for which StreetLight accuracy is already well-established — providing assurance that future deviations represent meaningful signals rather than noise.
+The segment-level diagnostics point to a concrete path for preserving long-term validation capability. The core trade-off Iowa DOT faces — reducing tube-count costs versus maintaining an independent accuracy check — does not require an all-or-nothing decision. A small, well-chosen set of anchor segments can serve as an ongoing monitoring baseline, making it possible to detect future degradation in StreetLight performance without sustaining the full cost of current tube density. The goal is a small set of anchor segments that are geographically distributed, representative of the volume ranges of interest, and for which StreetLight accuracy is already well-established, providing some assurance that future deviations represent meaningful signals rather than noise.
 
-Candidate segments should satisfy:
+We suggest that candidate segments should satisfy:
 
 - APE $\leq$ 1% in both 2022 and 2024 (a demanding threshold that identifies segments with exceptionally consistent agreement across measurement cycles)
 - AADT $\geq$ 7,500 (higher-volume corridors where StreetLight performs reliably and where counts matter most for planning purposes)

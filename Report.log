@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.1)  25 MAR 2026 18:35
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.2.1)  26 MAR 2026 12:00
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -652,41 +652,41 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 \openout3 = `Report.toc'.
 
 [2{c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}] [3]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 253.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 254.
 (c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) [4{c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}] [5] [6{c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}] [7] [8]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 604.
+(Font)              <9> on input line 606.
 
-Overfull \hbox (8.53473pt too wide) in paragraph at lines 604--614
+Overfull \hbox (8.53473pt too wide) in paragraph at lines 606--616
  [][] 
  []
 
 
-Overfull \hbox (8.53473pt too wide) in paragraph at lines 621--631
+Overfull \hbox (8.53473pt too wide) in paragraph at lines 623--633
  [][] 
  []
 
 
-Overfull \hbox (23.46928pt too wide) in paragraph at lines 651--661
+Overfull \hbox (23.46928pt too wide) in paragraph at lines 653--663
  [][] 
  []
 
 
-Overfull \hbox (23.46928pt too wide) in paragraph at lines 668--678
+Overfull \hbox (23.46928pt too wide) in paragraph at lines 670--680
  [][] 
  []
 
 [9
 
 ]
-Overfull \hbox (5.92229pt too wide) in paragraph at lines 700--710
+Overfull \hbox (5.92229pt too wide) in paragraph at lines 702--712
  [][] 
  []
 
 
-Overfull \hbox (5.92229pt too wide) in paragraph at lines 717--727
+Overfull \hbox (5.92229pt too wide) in paragraph at lines 719--729
  [][] 
  []
 
@@ -694,28 +694,34 @@ Overfull \hbox (5.92229pt too wide) in paragraph at lines 717--727
 <Report_files/figure-latex/unnamed-chunk-10-1.pdf, id=154, 469.755pt x 252.945pt>
 File: Report_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/unnamed-chunk-10-1.pdf>
-Package pdftex.def Info: Report_files/figure-latex/unnamed-chunk-10-1.pdf  used on input line 945.
+Package pdftex.def Info: Report_files/figure-latex/unnamed-chunk-10-1.pdf  used on input line 947.
 (pdftex.def)             Requested size: 422.77664pt x 227.64839pt.
 <Report_files/figure-latex/unnamed-chunk-11-1.pdf, id=155, 469.755pt x 252.945pt>
 File: Report_files/figure-latex/unnamed-chunk-11-1.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/unnamed-chunk-11-1.pdf>
-Package pdftex.def Info: Report_files/figure-latex/unnamed-chunk-11-1.pdf  used on input line 947.
+Package pdftex.def Info: Report_files/figure-latex/unnamed-chunk-11-1.pdf  used on input line 949.
 (pdftex.def)             Requested size: 422.77664pt x 227.64839pt.
 [13 <./Report_files/figure-latex/unnamed-chunk-10-1.pdf> <./Report_files/figure-latex/unnamed-chunk-11-1.pdf>]
 <Report_files/figure-latex/unnamed-chunk-13-1.pdf, id=183, 469.755pt x 252.945pt>
 File: Report_files/figure-latex/unnamed-chunk-13-1.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/unnamed-chunk-13-1.pdf>
-Package pdftex.def Info: Report_files/figure-latex/unnamed-chunk-13-1.pdf  used on input line 965.
+Package pdftex.def Info: Report_files/figure-latex/unnamed-chunk-13-1.pdf  used on input line 967.
 (pdftex.def)             Requested size: 422.77664pt x 227.64839pt.
 [14 <./Report_files/figure-latex/unnamed-chunk-13-1.pdf>]
 <Report_files/figure-latex/unnamed-chunk-17-1.pdf, id=200, 469.755pt x 252.945pt>
 File: Report_files/figure-latex/unnamed-chunk-17-1.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/unnamed-chunk-17-1.pdf>
-Package pdftex.def Info: Report_files/figure-latex/unnamed-chunk-17-1.pdf  used on input line 1013.
+Package pdftex.def Info: Report_files/figure-latex/unnamed-chunk-17-1.pdf  used on input line 1015.
 (pdftex.def)             Requested size: 422.77664pt x 227.64839pt.
 [15
 
- <./Report_files/figure-latex/unnamed-chunk-17-1.pdf>] [16] (./Report.aux)
+ <./Report_files/figure-latex/unnamed-chunk-17-1.pdf>]
+<Report_files/figure-latex/unnamed-chunk-18-1.pdf, id=218, 469.755pt x 252.945pt>
+File: Report_files/figure-latex/unnamed-chunk-18-1.pdf Graphic file (type pdf)
+<use Report_files/figure-latex/unnamed-chunk-18-1.pdf>
+Package pdftex.def Info: Report_files/figure-latex/unnamed-chunk-18-1.pdf  used on input line 1019.
+(pdftex.def)             Requested size: 422.77664pt x 227.64839pt.
+[16 <./Report_files/figure-latex/unnamed-chunk-18-1.pdf>] [17] (./Report.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -725,18 +731,18 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 16615 strings out of 469514
- 270209 string characters out of 5467648
- 731535 words of memory out of 5000000
- 44733 multiletter control sequences out of 15000+600000
- 702629 words of font info for 182 fonts, out of 8000000 for 9000
+ 16627 strings out of 469514
+ 270746 string characters out of 5467648
+ 730535 words of memory out of 5000000
+ 44742 multiletter control sequences out of 15000+600000
+ 702712 words of font info for 183 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  89i,11n,93p,1003b,552s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmex10.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb><c:/Users/samue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb>
-Output written on Report.pdf (16 pages, 21795324 bytes).
+Output written on Report.pdf (17 pages, 22029109 bytes).
 PDF statistics:
- 410 PDF objects out of 1000 (max. 8388607)
- 344 compressed objects within 4 object streams
- 71 named destinations out of 1000 (max. 500000)
- 41253 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 427 PDF objects out of 1000 (max. 8388607)
+ 356 compressed objects within 4 object streams
+ 72 named destinations out of 1000 (max. 500000)
+ 41258 words of extra memory for PDF output out of 42996 (max. 10000000)
 
