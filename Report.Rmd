@@ -11,6 +11,7 @@ output:
 header-includes:
   - \usepackage{placeins}
   - \usepackage{caption}
+  - \usepackage{float}
 ---
 
 # Executive Summary
@@ -30,7 +31,7 @@ This report evaluates StreetLight Data's AADT estimates for Iowa interstate segm
 
 StreetLight estimates are consistently higher than Iowa DOT counts across all volume ranges — a directional tendency that is modest at higher volumes but pronounced at lower ones.
 
-**Segment-level diagnostics** identify 7 persistently problematic segments (APE > 100% in both years) and a pool of 10 segments with exceptionally close agreement (APE $\leq$ 1% both years). The latter represents a natural starting point for a potential monitoring strategy that would preserve validation capability at reduced cost. Full details are provided in Section 5.
+**Segment-level diagnostics** identify 7 persistently problematic segments (APE > 100% in both years) and a pool of 8 eligible segments with exceptionally close agreement (APE $\leq$ 1% both years). The latter represents a natural starting point for a potential monitoring strategy that would preserve validation capability at reduced cost. Full details are provided in Section 5.
 
 \newpage
 
@@ -62,6 +63,7 @@ bucket_label_mndot <- function(aadt) {
 bucket_levels <- c("Sub-7,500", "(7,500-9,999)", "(10,000-19,999)", "(20,000+)")
 
 threshold <- 100
+not_as_bad <- 50 
 good_threshold <- 5
 stringent_thresh <- 1
 ```
@@ -167,7 +169,7 @@ Comparing StreetLight AADT estimates against Iowa DOT counts, accuracy is broadl
 
 For the $\geq$ 20,000 AADT bucket, MAPE ranges from 6.8% (2024) to 8.6% (2022), modestly above MN DOT's reported 5.81% but well within the FHWA Table 14 upper bound of approximately 10.5% for medium-volume roads (5,000--54,999) at the observed sample sizes. Signed percent error is positive at approximately 4.3% to 4.6%, in contrast to MN DOT's slight negative bias of $-3.25\%$, indicating a mild tendency toward overestimation in the Iowa data; median TCE likewise falls within the FHWA $\pm 2.0\%$ bias limit at large $n$. NRMSE is 9.0% to 10.7%, and APE SD is 6.9% to 9.1%. Taken together, these error levels are low in absolute terms, consistent with reliable probe-based estimation on higher-volume roadways, and meet FHWA accuracy standards. *Among the volume buckets examined, this group provides the strongest basis for using StreetLight estimates in place of physical counts.*
 
-In the 10,000 to 19,999 bucket, MAPE is 9.6% to 11.0%, compared to MN DOT's 6.28%. This range approaches but does not exceed the FHWA Table 14 upper bound of approximately 10.5--11.9% for medium-volume roads at the observed sample sizes — placing these results at the upper limit of what FHWA guidance would consider acceptable, with little margin remaining. Signed errors are positive (4.6% to 5.8%) versus MN DOT's near-zero 0.26%, again reflecting a tendency for overestimation, though median TCE remains within or near the FHWA $\pm 2$--$4\%$ bias limits depending on sample size. APE SD (11.9% to 13.8%) is approximately double MN DOT's 4.98%, suggesting higher variability across segments even where average accuracy is marginal. *StreetLight estimates in this range may be suitable for planning purposes where moderate error is tolerable, but should not be treated as direct substitutes for official counts without additional validation.*
+In the 10,000 to 19,999 bucket, MAPE is 9.6% to 11.0%, compared to MN DOT's 6.28%. This range approaches but does not exceed the FHWA Table 14 upper bound of approximately 10.5--11.9% for medium-volume roads at the observed sample sizes — placing these results at the upper limit of what FHWA guidance would consider acceptable, with little margin remaining. Signed errors are positive (4.8% to 5.8%) versus MN DOT's near-zero 0.26%, again reflecting a tendency for overestimation, though median TCE remains within or near the FHWA $\pm 2$--$4\%$ bias limits depending on sample size. APE SD (11.9% to 13.8%) is approximately double MN DOT's 4.98%, suggesting higher variability across segments even where average accuracy is marginal. *StreetLight estimates in this range may be suitable for planning purposes where moderate error is tolerable, but should not be treated as direct substitutes for official counts without additional validation.*
 
 In the 7,500 to 9,999 bucket, MAPE is 13.0% to 15.3%, somewhat above MN DOT's 12.16% and exceeding the FHWA Table 14 upper bound of approximately 10.5--12.7% for medium-volume roads at the observed sample sizes. Signed errors are positive at 7.3% to 10.2%, a notable directional contrast to MN DOT's $-4.02\%$ and substantially above the FHWA $\pm 2$--$5\%$ bias limits. APE SD is elevated at 18.5% to 22.0% versus MN DOT's 8.30%, indicating considerable segment-to-segment variability. Together these figures suggest this bucket does not meet FHWA accuracy standards as stated. *Estimates in this range should be used with caution and interpreted alongside, rather than in place of, available count data.*
 
@@ -219,21 +221,21 @@ summary_2024 <- summarise_one_year_mndot(conf2024)
 
 kable(
   summary_2022,
-  caption = "MnDOT AADT Accuracy Summary — 2022",
+  caption = "Iowa AADT Accuracy Summary — 2022",
   col.names = c("AADT Bucket", "n", "MAPE (%)", "Median % Error", "Mean % Error", "APE SD (%)", "NRMSE (%)"),
   digits = 2,
   format.args = list(big.mark = ",")
 ) |>
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+  kable_styling(latex_options = c("striped", "hold_position"), full_width = FALSE)
 
 kable(
   summary_2024,
-  caption = "MnDOT AADT Accuracy Summary — 2024",
+  caption = "Iowa AADT Accuracy Summary — 2024",
   col.names = c("AADT Bucket", "n", "MAPE (%)", "Median % Error", "Mean % Error", "APE SD (%)", "NRMSE (%)"),
   digits = 2,
   format.args = list(big.mark = ",")
 ) |>
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+  kable_styling(latex_options = c("striped", "hold_position"), full_width = FALSE)
 ```
 
 \newpage
@@ -263,7 +265,7 @@ make_bucket_table <- function(data, title) {
       )
     ) |>
     kable(caption = title, format.args = list(big.mark = ",")) |>
-    kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+    kable_styling(latex_options = c("striped", "hold_position"), full_width = FALSE)
 }
 
 make_bucket_table(conf2022, "AADT Bucket Comparison — 2022")
@@ -316,7 +318,7 @@ make_misclass_table <- function(data, title) {
     rename(Category = transition, Count = n) |>
     kable(caption = title, format.args = list(big.mark = ","), na = "—",
           booktabs = TRUE) |>
-    kable_styling(latex_options = c("condensed", "hold_position"),
+    kable_styling(latex_options = c("striped", "hold_position"),
               full_width = FALSE)|>
     row_spec(2, bold = TRUE)
 }
@@ -602,11 +604,9 @@ NRMSE penalizes large errors more heavily than MAPE by squaring deviations befor
 
 The analyses in this section move from aggregate bucket-level summaries to individual segment behavior. Two complementary diagnostics are presented: segments with persistently poor agreement (flagged as potential data quality or alignment issues) and segments with persistently strong agreement (natural candidates for an ongoing monitoring strategy). Together, these provide a concrete basis for evaluating where StreetLight estimates can be relied upon and where additional scrutiny is warranted.
 
-\newpage 
-
 ## Initial Metrics Coverage 
 
-```{r, echo = F, message = F, warning = F, cache = T, results = 'hide', fig.pos = "H", fig.height = 3.5, out.width = "90%"}
+```{r, echo = F, message = F, warning = F, cache = T, results = 'hide', fig.pos = "H", fig.height = 4.5, out.width = "90%"}
 conf2022_ll <- st_transform(conf2022, 4326)
 conf2024_ll <- st_transform(conf2024, 4326)
 
@@ -621,29 +621,34 @@ conf2024_ll <- st_transform(conf2024, 4326)
 #   addPolylines(color = "#1F78B4", weight = 3, opacity = 0.9) |>
 #   addLegend(position = "bottomright", colors = "#1F78B4",
 #             labels = "Conflated Segments", title = "2024 Coverage", opacity = 0.9)
-suppressMessages(
-  print(
-    ggplot(conf2022_ll) +
-      annotation_map_tile(type = "osm", zoom = 10, quiet = TRUE) +
-      geom_sf(color = "#1F78B4", linewidth = 1.5, alpha = 0.9) +
-      annotation_scale(location = "bl") +
-      labs(title = "2022 Coverage \u2014 Conflated Segments") +
-      theme_void()
-  )
-)
+# suppressMessages(
+#   print(
+#     ggplot(conf2022_ll) +
+#       annotation_map_tile(type = "osm", zoom = 10, quiet = TRUE) +
+#       geom_sf(color = "#1F78B4", linewidth = 1.5, alpha = 0.9) +
+#       annotation_scale(location = "bl") +
+#       labs(title = "2022 Coverage \u2014 Conflated Segments") +
+#       theme_void()
+#   )
+# )
 ```
 
 ```{r, echo = F, message = F, warning = F, cache = T, results = 'hide', fig.pos = "H", fig.height = 3.5, out.width = "90%"}
-suppressMessages(
-  print(
-    ggplot(conf2024_ll) +
-      annotation_map_tile(type = "osm", zoom = 10, quiet = TRUE) +
-      geom_sf(color = "#1F78B4", linewidth = 1.5, alpha = 0.9) +
-      annotation_scale(location = "bl") +
-      labs(title = "2024 Coverage \u2014 Conflated Segments") +
-      theme_void()
-  )
-)
+# suppressMessages(
+#   print(
+#     ggplot(conf2024_ll) +
+#       annotation_map_tile(type = "osm", zoom = 10, quiet = TRUE) +
+#       geom_sf(color = "#1F78B4", linewidth = 1.5, alpha = 0.9) +
+#       annotation_scale(location = "bl") +
+#       labs(title = "2024 Coverage \u2014 Conflated Segments") +
+#       theme_void()
+#   )
+# )
+```
+
+```{r coverage-maps, fig.show='hold', out.width='48%', fig.align='center'}
+knitr::include_graphics(here("Report_Img/2022-Coverage.png"))
+knitr::include_graphics(here("Report_Img/2024-Coverage.png"))
 ```
 
 \newpage
@@ -651,6 +656,52 @@ suppressMessages(
 ## Beyond 100% - Bad Matches 
 
 Segments where StreetLight APE exceeds `r threshold`% in *both* 2022 and 2024 are flagged below. Requiring the threshold to be exceeded in both years reduces the chance that a segment is flagged due to a single-year data anomaly rather than a persistent discrepancy. A threshold of 100% indicates StreetLight volume is more than double (or less than half) the IADOT count; this conservative threshold is used here to surface only the most severe and persistent discrepancies. Segments flagged under this criterion likely reflect one or more of the following: low probe-vehicle penetration on a given corridor, complex traffic patterns near interchanges or ramps that challenge segment-level attribution, or misalignment between StreetLight and IADOT segment boundary definitions.
+
+```{r problematic-data, echo=F, message=F, warning=F, cache=T}
+make_problematic_sf <- function(thresh) {
+  flag_segments <- function(data) {
+    data |>
+      st_drop_geometry() |>
+      filter(!is.na(AADT_IADOT), !is.na(VOLUME_STL), AADT_IADOT > 0) |>
+      mutate(APE = abs((VOLUME_STL - AADT_IADOT) / AADT_IADOT) * 100,
+             PE  = (VOLUME_STL - AADT_IADOT) / AADT_IADOT * 100)
+  }
+  f22 <- flag_segments(conf2022) |> filter(APE > thresh) |>
+    select(segment_id, AADT_IADOT_2022 = AADT_IADOT, VOLUME_STL_2022 = VOLUME_STL, APE_2022 = APE, PE_2022 = PE)
+  f24 <- flag_segments(conf2024) |> filter(APE > thresh) |>
+    select(segment_id, AADT_IADOT_2024 = AADT_IADOT, VOLUME_STL_2024 = VOLUME_STL, APE_2024 = APE, PE_2024 = PE)
+  prob_ids <- inner_join(f22, f24, by = "segment_id")
+  conf2022 |>
+    filter(segment_id %in% prob_ids$segment_id) |>
+    left_join(prob_ids, by = "segment_id") |>
+    select(-any_of(c("AADT_IADOT_2022", "VOLUME_STL_2022", "AADT_IADOT_2024", "VOLUME_STL_2024"))) |>
+    st_transform(3857)
+}
+
+psf_high <- make_problematic_sf(threshold)
+psf_low  <- make_problematic_sf(not_as_bad)
+
+combined_bbox <- st_bbox(bind_rows(psf_high, psf_low))
+xlims <- c(combined_bbox["xmin"], combined_bbox["xmax"])
+ylims <- c(combined_bbox["ymin"], combined_bbox["ymax"])
+
+make_map <- function(sf_data, title_thresh) {
+  ggplot(sf_data) +
+    annotation_map_tile(type = "cartolight", zoom = 7, quiet = TRUE, cachedir = "map_tiles/") +
+    geom_sf(color = "red", linewidth = 1.5, alpha = 0.9) +
+    annotation_scale(location = "bl") +
+    coord_sf(xlim = xlims, ylim = ylims) +
+    labs(title = paste0("Problematic Segments \u2014 APE > ", title_thresh, "% Both Years")) +
+    theme_void()
+}
+# suppressMessages(print(make_map(psf_high, threshold)))
+# suppressMessages(print(make_map(psf_low, not_as_bad)))
+```
+
+```{r bad-coverage-maps, fig.show='hold', out.width='48%', fig.align='center'}
+knitr::include_graphics(here("Report_Img/100-Plus.png"))
+knitr::include_graphics(here("Report_Img/50-Plus.png"))
+```
 
 ```{r, echo = F, message = F, warning = F, cache = T, fig.pos = "H"}
 flag_segments <- function(data) {
@@ -660,35 +711,30 @@ flag_segments <- function(data) {
     mutate(APE = abs((VOLUME_STL - AADT_IADOT) / AADT_IADOT) * 100,
            PE  = (VOLUME_STL - AADT_IADOT) / AADT_IADOT * 100)
 }
-flagged_2022 <- flag_segments(conf2022) |>
-  filter(APE > threshold) |>
-  select(segment_id, AADT_IADOT_2022 = AADT_IADOT, VOLUME_STL_2022 = VOLUME_STL, APE_2022 = APE, PE_2022 = PE)
-flagged_2024 <- flag_segments(conf2024) |>
-  filter(APE > threshold) |>
-  select(segment_id, AADT_IADOT_2024 = AADT_IADOT, VOLUME_STL_2024 = VOLUME_STL, APE_2024 = APE, PE_2024 = PE)
-problematic_ids <- inner_join(flagged_2022, flagged_2024, by = "segment_id")
-problematic_sf <- conf2022 |>
-  filter(segment_id %in% problematic_ids$segment_id) |>
-  left_join(problematic_ids, by = "segment_id") |>
-  select(-any_of(c("AADT_IADOT_2022", "VOLUME_STL_2022", "AADT_IADOT_2024", "VOLUME_STL_2024"))) |>
-  st_transform(4326)
 ```
 
-```{r, echo = F, message = F, warning = F, cache = T, results = 'hide', fig.pos = "H", fig.height = 3.5, out.width = "90%"}
-suppressMessages(
-  print(
-    ggplot(problematic_sf) +
-      annotation_map_tile(type = "cartolight", zoom = 7, quiet = TRUE, cachedir = "map_tiles/") +
-      geom_sf(color = "red", linewidth = 1.5, alpha = 0.9) +
-      annotation_scale(location = "bl") +
-      labs(title = paste0("Problematic Segments \u2014 APE > ", threshold, "% Both Years")) +
-      theme_void()
-  )
-)
+```{r problematic-data-high, echo=F, message=F, warning=F, cache=T}
+flagged_2022_high <- flag_segments(conf2022) |>
+  filter(APE > threshold) |>
+  select(segment_id, AADT_IADOT_2022 = AADT_IADOT, VOLUME_STL_2022 = VOLUME_STL, APE_2022 = APE, PE_2022 = PE)
+flagged_2024_high <- flag_segments(conf2024) |>
+  filter(APE > threshold) |>
+  select(segment_id, AADT_IADOT_2024 = AADT_IADOT, VOLUME_STL_2024 = VOLUME_STL, APE_2024 = APE, PE_2024 = PE)
+problematic_ids_high <- inner_join(flagged_2022_high, flagged_2024_high, by = "segment_id")
+```
+
+```{r problematic-data-low, echo=F, message=F, warning=F, cache=T}
+flagged_2022_low <- flag_segments(conf2022) |>
+  filter(APE > not_as_bad) |>
+  select(segment_id, AADT_IADOT_2022 = AADT_IADOT, VOLUME_STL_2022 = VOLUME_STL, APE_2022 = APE, PE_2022 = PE)
+flagged_2024_low <- flag_segments(conf2024) |>
+  filter(APE > not_as_bad) |>
+  select(segment_id, AADT_IADOT_2024 = AADT_IADOT, VOLUME_STL_2024 = VOLUME_STL, APE_2024 = APE, PE_2024 = PE)
+problematic_ids_low <- inner_join(flagged_2022_low, flagged_2024_low, by = "segment_id")
 ```
 
 ```{r, echo = F, message = F, warning = F, cache = T}
-problematic_ids |>
+problematic_ids_high |>
   mutate(`Deviation - Overall` = round((APE_2022 + APE_2024) / 2, 1),
          `Deviation - 2022`    = round(APE_2022, 1),
          `Deviation - 2024`    = round(APE_2024, 1)) |>
@@ -696,15 +742,11 @@ problematic_ids |>
   arrange(desc(`Deviation - Overall`)) |>
   kable(caption = paste0("Problematic Segments (APE > ", threshold, "\\% in Both Years)"),
         format.args = list(big.mark = ",")) |>
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
-                full_width = FALSE, latex_options = "hold_position")
-
+  kable_styling(latex_options = c("striped", "hold_position"), full_width = FALSE)
 ```
 
-\clearpage
-
 ```{r, echo = F, message = F, warning = F, cache = T}
-problematic_ids |>
+problematic_ids_high |>
   mutate(
     `Deviation - Overall` = round((APE_2022 + APE_2024) / 2, 1),
     `APE - 2022`          = round(APE_2022, 1),
@@ -723,29 +765,11 @@ problematic_ids |>
   arrange(desc(`Deviation - Overall`)) |>
   kable(caption = paste0("Percent Deviations — Problematic Segments (APE > ", threshold, "\\% in Both Years)"),
         format.args = list(big.mark = ",")) |>
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
-                full_width = FALSE, latex_options = "hold_position") |>
+  kable_styling(latex_options = c("striped", "hold_position"), full_width = FALSE) |>
   add_header_above(c(" " = 1, "2022" = 2, "2024" = 2, " " = 1))
 ```
 
-```{r, echo = F, fig.pos = "H"}
-# Map
-# leaflet(problematic_sf) |>
-#   addTiles() |>
-#   addPolylines(
-#     color = "red", weight = 3, opacity = 0.9,
-#     popup = ~paste0(
-#       "<b>Segment:</b> ", segment_id, "<br>",
-#       "<b>2022 APE:</b> ", round(APE_2022, 1), "%<br>",
-#       "<b>2024 APE:</b> ", round(APE_2024, 1), "%<br>",
-#       "<b>2022 PE:</b> ",  round(PE_2022, 1),  "%<br>",
-#       "<b>2024 PE:</b> ",  round(PE_2024, 1),  "%"
-#     )
-#   ) |>
-#   addLegend(position = "bottomright", colors = "red",
-#             labels = paste0("Problematic Segments (APE > ", threshold, "% both years)"),
-#             opacity = 0.9)
-```
+\clearpage
 
 ## Within 5% - Strong Matches
 
@@ -773,16 +797,16 @@ good_sf <- conf2022 |>
   st_transform(4326)
 
 # Map
-suppressMessages(
-  print(
-    ggplot(good_sf) +
-      annotation_map_tile(type = "cartolight", zoom = 7, quiet = TRUE, cachedir = "map_tiles/") +
-      geom_sf(color = "forestgreen", linewidth = 1.5, alpha = 0.9) +
-      annotation_scale(location = "bl") +
-      labs(title = bquote("Strong Match Segments — APE" <= .(good_threshold) * "% Both Years")) + 
-  theme_void()
-  )
-)
+# suppressMessages(
+#   print(
+#     ggplot(good_sf) +
+#       annotation_map_tile(type = "cartolight", zoom = 7, quiet = TRUE, cachedir = "map_tiles/") +
+#       geom_sf(color = "forestgreen", linewidth = 1.5, alpha = 0.9) +
+#       annotation_scale(location = "bl") +
+#       labs(title = bquote("Strong Match Segments — APE" <= .(good_threshold) * "% Both Years")) + 
+#   theme_void()
+#   )
+# )
 
 # Companion table
 # good_sf |>
@@ -798,10 +822,8 @@ suppressMessages(
 #   ) |>
 #   arrange(`APE 2022`) |>
 #   kable(caption = paste0("Segments with APE \u2264 ", good_threshold, "% in Both Years")) |>
-#   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+#   kable_styling(bootstrap_options = c("striped", "hover", "striped"), full_width = FALSE)
 ```
-
-\newpage 
 
 ```{r, echo = F, message = F, warning = F, cache = T, results = 'hide', fig.pos = "H", fig.height = 3.5, out.width = "90%"}
 good_2022 <- flag_segments(conf2022) |>
@@ -823,16 +845,21 @@ good_sf <- conf2022 |>
   st_transform(4326)
 
 # Map
-suppressMessages(
-  print(
-    ggplot(good_sf) +
-      annotation_map_tile(type = "cartolight", zoom = 7, quiet = TRUE, cachedir = "map_tiles/") +
-      geom_sf(color = "forestgreen", linewidth = 1.5, alpha = 0.9) +
-      annotation_scale(location = "bl") +
-      labs(title = bquote("Strong Match Segments — APE" <= .(stringent_thresh) * "% Both Years")) + 
-  theme_void()
-  )
-)
+# suppressMessages(
+#   print(
+#     ggplot(good_sf) +
+#       annotation_map_tile(type = "cartolight", zoom = 7, quiet = TRUE, cachedir = "map_tiles/") +
+#       geom_sf(color = "forestgreen", linewidth = 1.5, alpha = 0.9) +
+#       annotation_scale(location = "bl") +
+#       labs(title = bquote("Strong Match Segments — APE" <= .(stringent_thresh) * "% Both Years")) + 
+#   theme_void()
+#   )
+# )
+```
+
+```{r good-coverage-maps, fig.show='hold', out.width='48%', fig.align='center'}
+knitr::include_graphics(here("Report_Img/1-Minus.png"))
+knitr::include_graphics(here("Report_Img/5-Minus.png"))
 ```
 
 ```{r good-tables, echo = F, warning = F, message = F, fig.pos = "H"}
@@ -852,7 +879,7 @@ map_dfr(good_thresholds, function(t) {
 }) |>
   kable(caption = "Segment Match Counts by APE Threshold",
         format.args = list(big.mark = ",")) |>
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+  kable_styling(latex_options = c("striped", "hold_position"), full_width = FALSE)
 
 good_threshold <- 1
 good_ids <- inner_join(
@@ -880,7 +907,7 @@ good_ids |>
     col.names = c("Segment", "Expected", "Observed", "Expected", "Observed"),
     format.args = list(big.mark = ",")
   ) |>
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) |>
+  kable_styling(latex_options = c("striped", "hold_position"), full_width = FALSE) |>
   add_header_above(c(" " = 1, "2022" = 2, "2024" = 2))
 
 # Map
@@ -914,6 +941,6 @@ We suggest that candidate segments should satisfy:
 - Geographic spread across the coverage area (not clustered on a single corridor)
 - Proximity to existing tube infrastructure (minimizes setup burden and safety risk on high-speed segments)
 
-The 10 segments in Table 22 meeting the $\leq 1\%$ threshold in both years form a natural, conservative starting pool. A final selection of 3–5 segments from this pool — chosen to maximize geographic spread and volume-range coverage — would provide an ongoing validation baseline at substantially reduced cost relative to current tube density. Analysts preferring a broader candidate pool may relax the APE threshold to $\leq 5\%$, which remains within FHWA acceptable bounds; however, this expands the pool to roughly 94 segments and requires additional filtering on geographic and volume criteria to arrive at a manageable monitoring set.
+Of the 10 segments in Table 22 meeting the $\leq 1\%$ threshold in both years, 8 satisfy the AADT $\geq 7{,}500$ criterion; the remaining two (segments 1,202,772,121 and 1,237,053,600) fall well below this threshold and should be excluded from consideration as monitoring candidates. These 8 segments form a natural, conservative starting pool. A final selection of 3–5 segments from this (or an alternatively specified) pool — chosen to maximize geographic spread and volume-range coverage — would provide an ongoing validation baseline at substantially reduced cost relative to current tube density. Analysts preferring a broader candidate pool may relax the APE threshold to $\leq 5\%$, which remains within FHWA acceptable bounds; however, this expands the pool to roughly 92 segments and requires additional filtering on geographic and volume criteria to arrive at a manageable monitoring set.
 
 This approach does not eliminate uncertainty about StreetLight's use of Iowa DOT data during calibration. However, it preserves the more important operational capability: the ability to detect future degradation in StreetLight accuracy using an independent validation baseline. Final segment selection from this pool is left to Iowa DOT, based on operational knowledge of existing tube placement, access constraints, and corridor priorities not captured in the data alone.
