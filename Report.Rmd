@@ -88,9 +88,9 @@ StreetLight AADT estimates perform reliably on higher-volume Iowa interstate seg
 
 Across all volume buckets, StreetLight estimates tend to run slightly higher than Iowa DOT counts. This directional tendency is consistent and modest on higher-volume roads, but becomes more pronounced at lower volumes.
 
-Overall, the results support using StreetLight AADT estimates as a credible, independently generated source for higher-volume Iowa interstate segments, with the recommendation that low-volume segments be treated with appropriate caution. These results point to an important practical question: How should DOT balance the cost savings of reduced counter deployment against the accuracy limitations StreetLight exhibits at lower volumes? The findings here suggest a one potential strategy — leveraging StreetLight for high-volume segments while maintaining physical counters where estimates are less reliable.
+Overall, the results support using StreetLight AADT estimates as a credible, independently generated source for higher-volume Iowa interstate segments, with the recommendation that low-volume segments be treated with appropriate caution. These results point to an important practical question: How should DOT balance the cost savings of reduced counter deployment against the accuracy limitations StreetLight exhibits at lower volumes? The findings here suggest one potential strategy — leveraging StreetLight for high-volume segments while maintaining physical counters where estimates are less reliable.
 
-Note: MN DOT applies a data quality filter before computing its published accuracy metrics --- a step not applied here --- so some portion of the gap between Iowa and Minnesota results is methodological rather than reflective of true differences in estimate quality. This distinction is detailed in Section 4.2.
+**Note:** MN DOT applies a data quality filter before computing its published accuracy metrics --- a step not applied here --- so some portion of the gap between Iowa and Minnesota results is methodological rather than reflective of true differences in estimate quality. This distinction is detailed in Section 4.2.
 
 # Question 1: Independence 
 
